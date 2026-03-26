@@ -1,4 +1,4 @@
-import 'package:dart_presentation/screens/slide.dart';
+import 'package:dart_presentation/screens/router.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         textTheme: GoogleFonts.spaceGroteskTextTheme(),
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
-      home: const Slide(),
+      home: const SlideRouter(),
     );
   }
 }

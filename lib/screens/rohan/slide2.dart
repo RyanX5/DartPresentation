@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class Slide extends StatelessWidget {
-  const Slide({super.key});
+class Slide2 extends StatelessWidget {
+  const Slide2({super.key});
 
   // we prolly dont need scaffold here (dont need appbar and shi)
   @override
@@ -20,7 +20,7 @@ class Slide extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            "Slide 1",
+            "Slide 2",
             style: TextStyle(
               color: Colors.black26,
               fontSize: 24,
