@@ -17,23 +17,21 @@ class _RohanSlide4State extends State<RohanSlide4> {
   Widget build(BuildContext context) {
     return DefaultSlide(
       title: 'Semantic Analysis',
-      subtitle: 'The "Brain" of the Dart Language.',
+      subtitle: "Meaning, not just structure.",
       childrenSlides: [
-        const _AnalyzerOverview(),
+        const _WhatIsSemantic(),
         const _TypeInferenceLock(),
-        const _SoundnessVisual(),
+        const _SoundnessExplained(),
         const _FlowAnalysisSimulator(),
+        const _NullOperatorPlayground(),
         const _StaticVsDynamicBattle(),
-        const _LinterSimulation(),
       ],
     );
   }
 }
 
-// ── FRAME 1: ANALYZER OVERVIEW ──────────────────────────────────────────────
-
-class _AnalyzerOverview extends StatelessWidget {
-  const _AnalyzerOverview();
+class _WhatIsSemantic extends StatelessWidget {
+  const _WhatIsSemantic();
 
   @override
   Widget build(BuildContext context) {
@@ -42,32 +40,81 @@ class _AnalyzerOverview extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('The Role of the Analyzer', style: TextStyles().title()),
-            const SizedBox(height: 60),
+            Text('What is Semantic Analysis?', style: TextStyles().title()),
+            const SizedBox(height: 16),
+            const Text(
+              'Syntax checks structure.  Semantics checks meaning.',
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 19),
+            ),
+            const SizedBox(height: 50),
+            // Pipeline diagram
+            AnimatedFadeUp(
+              delay: 200,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _PipelineStep(
+                    label: 'Source\nCode',
+                    icon: Icons.edit_note,
+                    color: Colors.white38,
+                  ),
+                  _Arrow(),
+                  _PipelineStep(
+                    label: 'Lexer\n(tokens)',
+                    icon: Icons.format_list_bulleted,
+                    color: Colors.white54,
+                  ),
+                  _Arrow(),
+                  _PipelineStep(
+                    label: 'Parser\n(AST)',
+                    icon: Icons.account_tree_outlined,
+                    color: Colors.white70,
+                  ),
+                  _Arrow(),
+                  _PipelineStep(
+                    label: 'Semantic\nAnalyzer',
+                    icon: Icons.psychology_outlined,
+                    color: AppColors.dartCyan,
+                    highlight: true,
+                  ),
+                  _Arrow(),
+                  _PipelineStep(
+                    label: 'Code\nGen',
+                    icon: Icons.memory,
+                    color: Colors.white38,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 50),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _AnalyzerTaskCard(
-                  icon: Icons.search_rounded,
-                  title: 'Static Verification',
-                  desc:
-                      'Validates code without executing it. Finds bugs at author-time.',
-                  delay: 200,
-                ),
-                const SizedBox(width: 24),
-                _AnalyzerTaskCard(
-                  icon: Icons.account_tree_outlined,
-                  title: 'Semantic Mapping',
-                  desc:
-                      'Builds a graph of types, scopes, and variable lifetimes.',
+                AnimatedFadeUp(
                   delay: 400,
+                  child: _TaskCard(
+                    icon: Icons.category_outlined,
+                    title: 'Type Checking',
+                    desc: 'Verifies every value is used as the correct type.',
+                  ),
                 ),
-                const SizedBox(width: 24),
-                _AnalyzerTaskCard(
-                  icon: Icons.fact_check_outlined,
-                  title: 'Flow-Sensitive Tracking',
-                  desc: 'Checks every possible execution branch for safety.',
+                const SizedBox(width: 20),
+                AnimatedFadeUp(
                   delay: 600,
+                  child: _TaskCard(
+                    icon: Icons.account_tree_outlined,
+                    title: 'Flow Analysis',
+                    desc: 'Tracks nullability through every branch.',
+                  ),
+                ),
+                const SizedBox(width: 20),
+                AnimatedFadeUp(
+                  delay: 800,
+                  child: _TaskCard(
+                    icon: Icons.warning_amber_outlined,
+                    title: 'Dead Code & Linting',
+                    desc: 'Flags unreachable logic and anti-patterns.',
+                  ),
                 ),
               ],
             ),
@@ -77,8 +124,6 @@ class _AnalyzerOverview extends StatelessWidget {
     );
   }
 }
-
-// ── FRAME 2: TYPE INFERENCE LOCK (Interactive) ──────────────────────────────
 
 class _TypeInferenceLock extends StatefulWidget {
   const _TypeInferenceLock();
@@ -88,58 +133,141 @@ class _TypeInferenceLock extends StatefulWidget {
 }
 
 class _TypeInferenceLockState extends State<_TypeInferenceLock> {
-  bool _isAssigned = false;
+  int _selected = 0;
+
+  final List<Map<String, dynamic>> _cases = [
+    {
+      'code': 'var x = 42;',
+      'inferred': 'int',
+      'ok': true,
+      'note': 'x is permanently int',
+    },
+    {
+      'code': 'var s = "hello";',
+      'inferred': 'String',
+      'ok': true,
+      'note': 's is permanently String',
+    },
+    {
+      'code': 'var x = 42;\nx = "hi";',
+      'inferred': 'int',
+      'ok': false,
+      'note': "String can't be assigned to int",
+    },
+    {
+      'code': 'var items = [1, 2, 3];',
+      'inferred': 'List<int>',
+      'ok': true,
+      'note': 'Inferred from literal',
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
+    final info = _cases[_selected];
+    final bool isOk = info['ok'] as bool;
+
     return Wrapper(
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Type Inference Logic', style: TextStyles().title()),
-            const SizedBox(height: 40),
+            Text('Type Inference', style: TextStyles().title()),
+            const SizedBox(height: 16),
             const Text(
-              'Static types are resolved, then strictly enforced.',
-              style: TextStyle(color: Colors.white54, fontSize: 18),
-            ),
-            const SizedBox(height: 60),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _CodeActionBox(
-                  label: 'STEP 1: DECLARE',
-                  code: 'var x;',
-                  isActive: true,
-                ),
-                const Icon(Icons.arrow_forward, color: Colors.white24),
-                _CodeActionBox(
-                  label: 'STEP 2: INITIALIZE',
-                  code: 'x = 42;',
-                  isActive: _isAssigned,
-                  onTap: () => setState(() => _isAssigned = true),
-                  highlightColor: Colors.greenAccent,
-                ),
-                const Icon(Icons.arrow_forward, color: Colors.white24),
-                _CodeActionBox(
-                  label: 'STEP 3: RE-ASSIGN',
-                  code: 'x = "Hello";',
-                  isActive: _isAssigned,
-                  isError: _isAssigned,
-                  errorMessage:
-                      'COMPILE ERROR: String cannot be assigned to int.',
-                ),
-              ],
+              'var looks flexible, but the analyzer locks the type at first assignment.',
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 18),
             ),
             const SizedBox(height: 40),
-            if (!_isAssigned)
-              const Text(
-                'Click "Initialize" to see the Analyzer lock the type.',
-                style: TextStyle(
-                  fontStyle: FontStyle.italic,
-                  color: AppColors.dartCyan,
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              alignment: WrapAlignment.center,
+              children: List.generate(_cases.length, (i) {
+                final active = i == _selected;
+                return InkWell(
+                  onTap: () => setState(() => _selected = i),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: active
+                          ? AppColors.dartBlue
+                          : Colors.white.withAlpha(8),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: active ? AppColors.dartCyan : Colors.white10,
+                      ),
+                    ),
+                    child: Text(
+                      _cases[i]['code'] as String,
+                      style: TextStyle(
+                        color: active ? Colors.white : Colors.white38,
+                        fontFamily: 'monospace',
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+            const SizedBox(height: 36),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 250),
+              child: Container(
+                key: ValueKey(_selected),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 40,
+                  vertical: 24,
+                ),
+                decoration: BoxDecoration(
+                  color: isOk
+                      ? Colors.greenAccent.withAlpha(15)
+                      : Colors.redAccent.withAlpha(15),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: isOk
+                        ? Colors.greenAccent.withAlpha(80)
+                        : Colors.redAccent.withAlpha(80),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      isOk ? Icons.check_circle_outline : Icons.error_outline,
+                      color: isOk ? Colors.greenAccent : Colors.redAccent,
+                      size: 32,
+                    ),
+                    const SizedBox(width: 20),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Inferred: ${info['inferred']}',
+                          style: const TextStyle(
+                            color: Colors.white60,
+                            fontSize: 15,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          info['note'] as String,
+                          style: TextStyle(
+                            color: isOk ? Colors.greenAccent : Colors.redAccent,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
+            ),
           ],
         ),
       ),
@@ -147,50 +275,34 @@ class _TypeInferenceLockState extends State<_TypeInferenceLock> {
   }
 }
 
-// ── FRAME 3: SOUNDNESS VISUAL ───────────────────────────────────────────────
-
-class _SoundnessVisual extends StatelessWidget {
-  const _SoundnessVisual();
+class _SoundnessExplained extends StatelessWidget {
+  const _SoundnessExplained();
 
   @override
   Widget build(BuildContext context) {
-    return Wrapper(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('The Soundness Guarantee', style: TextStyles().title()),
-            const SizedBox(height: 50),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 800),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _InfoTile(
-                      title: 'No Loopholes',
-                      desc:
-                          'In a sound system, you can never get into a state where an expression evaluates to a value that doesn\'t match its static type.',
-                    ),
-                  ),
-                  const SizedBox(width: 40),
-                  Expanded(
-                    child: _InfoTile(
-                      title: 'Runtime Confidence',
-                      desc:
-                          'Since types are guaranteed, the AOT compiler can optimize code for performance, knowing a String will NEVER be null or an int.',
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+    const code = '''
+String? name = null; // nullable — explicitly opted in
+
+// Without a null check, the analyzer rejects this:
+// print(name.length); // COMPILE ERROR
+
+// After a null check, Dart PROMOTES the type:
+if (name != null) {
+  // Inside here, name is treated as String, not String?
+  print(name.length); // SAFE: no ? needed
+}
+
+// Java: @Nullable is a hint, ignored at runtime
+// Dart: ? is enforced which means the compiler GUARANTEES safety''';
+
+    return _CodeFrameLayout(
+      title: 'Sound Null Safety',
+      subtitle:
+          '"Sound" = the compiler gives a full guarantee, no loopholes or runtime surprises.',
+      child: CodeDisplay(code: code),
     );
   }
 }
-
-// ── FRAME 4: FLOW ANALYSIS SIMULATOR (Interactive) ──────────────────────────
 
 class _FlowAnalysisSimulator extends StatefulWidget {
   const _FlowAnalysisSimulator();
@@ -200,7 +312,7 @@ class _FlowAnalysisSimulator extends StatefulWidget {
 }
 
 class _FlowAnalysisSimulatorState extends State<_FlowAnalysisSimulator> {
-  bool _hasNullCheck = false;
+  bool _hasCheck = false;
 
   @override
   Widget build(BuildContext context) {
@@ -209,122 +321,85 @@ class _FlowAnalysisSimulatorState extends State<_FlowAnalysisSimulator> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Flow-Based Promotion', style: TextStyles().title()),
-            const SizedBox(height: 60),
+            Text('Flow Analysis & Type Promotion', style: TextStyles().title()),
+            const SizedBox(height: 16),
+            const Text(
+              'The analyzer builds a control-flow graph and tracks type information through every branch.',
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 17),
+            ),
+            const SizedBox(height: 40),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Mock Code Editor
-                Container(
-                  width: 500,
-                  padding: const EdgeInsets.all(32),
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.white10),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'void printLength(String? text) {',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'monospace',
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      InkWell(
-                        onTap: () =>
-                            setState(() => _hasNullCheck = !_hasNullCheck),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: _hasNullCheck
-                                ? Colors.greenAccent.withAlpha(20)
-                                : Colors.transparent,
-                            border: Border.all(
-                              color: _hasNullCheck
-                                  ? Colors.greenAccent
-                                  : Colors.white24,
-                            ),
-                          ),
-                          child: Text(
-                            _hasNullCheck
-                                ? '  if (text != null) {'
-                                : '  // Missing Null Check',
-                            style: TextStyle(
-                              color: _hasNullCheck
-                                  ? Colors.greenAccent
-                                  : Colors.white24,
-                              fontFamily: 'monospace',
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        '    print(text.length);',
-                        style: TextStyle(
-                          color: _hasNullCheck
-                              ? Colors.white
-                              : Colors.redAccent,
-                          decoration: _hasNullCheck
-                              ? null
-                              : TextDecoration.lineThrough,
-                          fontFamily: 'monospace',
-                        ),
-                      ),
-                      const Text(
-                        '  }',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'monospace',
-                        ),
-                      ),
-                      const Text(
-                        '}',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'monospace',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 60),
-                // Analyzer Output
                 Column(
                   children: [
                     const Text(
-                      'ANALYZER STATUS',
+                      'CODE',
                       style: TextStyle(
                         color: AppColors.textMuted,
-                        fontSize: 12,
+                        fontSize: 11,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _PromotionCodeView(isPromoted: _hasCheck),
+                  ],
+                ),
+                const SizedBox(width: 60),
+                Column(
+                  children: [
+                    const Text(
+                      'ANALYZER VERDICT',
+                      style: TextStyle(
+                        color: AppColors.textMuted,
+                        fontSize: 11,
                         letterSpacing: 2,
                       ),
                     ),
                     const SizedBox(height: 20),
-                    Icon(
-                      _hasNullCheck ? Icons.check_circle : Icons.error,
-                      color: _hasNullCheck
-                          ? Colors.greenAccent
-                          : Colors.redAccent,
-                      size: 80,
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      _hasNullCheck
-                          ? 'TYPE PROMOTED:\nString? ➜ String'
-                          : 'SEMANTIC ERROR:\nUnsafe call on nullable',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: _hasNullCheck
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child: Icon(
+                        key: ValueKey(_hasCheck),
+                        _hasCheck ? Icons.check_circle : Icons.error,
+                        color: _hasCheck
                             ? Colors.greenAccent
                             : Colors.redAccent,
-                        fontWeight: FontWeight.bold,
+                        size: 64,
                       ),
+                    ),
+                    const SizedBox(height: 12),
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child: Text(
+                        key: ValueKey(_hasCheck),
+                        _hasCheck
+                            ? 'PROMOTED:\nString? → String'
+                            : 'SEMANTIC ERROR:\nNullable method call',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: _hasCheck
+                              ? Colors.greenAccent
+                              : Colors.redAccent,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 28),
+                    Row(
+                      children: [
+                        Switch(
+                          value: _hasCheck,
+                          onChanged: (v) => setState(() => _hasCheck = v),
+                          activeThumbColor: Colors.greenAccent,
+                        ),
+                        const SizedBox(width: 8),
+                        const Text(
+                          'Add null check',
+                          style: TextStyle(color: Colors.white54, fontSize: 14),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -337,7 +412,93 @@ class _FlowAnalysisSimulatorState extends State<_FlowAnalysisSimulator> {
   }
 }
 
-// ── FRAME 5: STATIC VS DYNAMIC (Crash Test) ─────────────────────────────────
+class _NullOperatorPlayground extends StatefulWidget {
+  const _NullOperatorPlayground();
+
+  @override
+  State<_NullOperatorPlayground> createState() =>
+      _NullOperatorPlaygroundState();
+}
+
+class _NullOperatorPlaygroundState extends State<_NullOperatorPlayground> {
+  String? _input;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrapper(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Null Operators', style: TextStyles().title()),
+            const SizedBox(height: 16),
+            const Text(
+              'Dart provides three operators for working with nullable values safely.',
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 18),
+            ),
+            const SizedBox(height: 40),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _OperatorCard(
+                  op: '??',
+                  name: 'Null Fallback',
+                  expression:
+                      '${_input == null ? 'null' : '"$_input"'} ?? "Guest"',
+                  result: _input ?? 'Guest',
+                  desc: 'Returns right side if left is null.',
+                ),
+                const SizedBox(width: 20),
+                _OperatorCard(
+                  op: '?.',
+                  name: 'Safe Call',
+                  expression:
+                      '${_input == null ? 'null' : '"$_input"'}?.toUpperCase()',
+                  result: _input?.toUpperCase() ?? 'null',
+                  desc:
+                      "Calls method only if not null. Returns null otherwise.",
+                ),
+                const SizedBox(width: 20),
+                _OperatorCard(
+                  op: '??=',
+                  name: 'Null Assign',
+                  expression: 'x ??= "Default"',
+                  result: _input == null ? '"Default"' : 'unchanged',
+                  desc: 'Assigns value only if variable is currently null.',
+                ),
+              ],
+            ),
+            const SizedBox(height: 36),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () => setState(() => _input = null),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.redAccent.withAlpha(40),
+                    foregroundColor: Colors.redAccent,
+                    side: const BorderSide(color: Colors.redAccent),
+                  ),
+                  child: const Text('input = null'),
+                ),
+                const SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: () => setState(() => _input = 'Rohan'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.dartBlue.withAlpha(40),
+                    foregroundColor: AppColors.dartCyan,
+                    side: const BorderSide(color: AppColors.dartBlue),
+                  ),
+                  child: const Text('input = "Rohan"'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class _StaticVsDynamicBattle extends StatelessWidget {
   const _StaticVsDynamicBattle();
@@ -349,25 +510,36 @@ class _StaticVsDynamicBattle extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Compile-Time vs. Runtime', style: TextStyles().title()),
-            const SizedBox(height: 60),
+            Text(
+              'Compile-Time vs. Runtime Errors',
+              style: TextStyles().title(),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Static typing lets the analyzer catch bugs before a single line runs.',
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 18),
+            ),
+            const SizedBox(height: 50),
             Row(
               children: [
-                _LanguageCrashCard(
-                  lang: 'PYTHON (Dynamic)',
-                  code: 'x = "10"\nprint(x + 5)',
-                  result: 'CRASHES AT RUNTIME',
-                  resultColor: Colors.redAccent,
+                _CrashCard(
+                  lang: 'PYTHON  (Dynamic)',
+                  code:
+                      'x = "10"\nprint(x + 5)\n# TypeError at RUNTIME\n# Users see the crash',
+                  verdict: 'CRASHES AT RUNTIME',
+                  sub: 'Error surfaces only when executed',
+                  verdictColor: Colors.redAccent,
                   icon: Icons.bug_report,
                 ),
-                const SizedBox(width: 40),
-                _LanguageCrashCard(
-                  lang: 'DART (Static)',
-                  code: 'var x = "10";\nprint(x + 5);',
-                  result: 'REJECTED BY ANALYZER',
-                  resultColor: AppColors.dartCyan,
+                const SizedBox(width: 32),
+                _CrashCard(
+                  lang: 'DART  (Static)',
+                  code:
+                      'var x = "10";\nprint(x + 5);\n// COMPILE ERROR\n// Analyzer rejects this',
+                  verdict: 'CAUGHT BY ANALYZER',
+                  sub: 'Zero risk — never reaches users',
+                  verdictColor: AppColors.dartCyan,
                   icon: Icons.security,
-                  isCompileError: true,
                 ),
               ],
             ),
@@ -378,44 +550,39 @@ class _StaticVsDynamicBattle extends StatelessWidget {
   }
 }
 
-// ── FRAME 6: LINTER SIMULATION ──────────────────────────────────────────────
+class _CodeFrameLayout extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final Widget child;
 
-class _LinterSimulation extends StatelessWidget {
-  const _LinterSimulation();
+  const _CodeFrameLayout({
+    required this.title,
+    required this.subtitle,
+    required this.child,
+  });
 
   @override
   Widget build(BuildContext context) {
-    const code = '''
-void main() {
-  // The Analyzer catches "Logical Errors"
-  
-  String name = 'Rohan';
-  
-  if (name == null) { 
-    // LINT: This block is dead code. 
-    // name is non-nullable and can never be null.
-    print('Hello?'); 
-  }
-  
-  // LINT: Unnecessary type annotation
-  int age = 23; 
-}''';
-
     return Wrapper(
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Beyond Syntax: Linting', style: TextStyles().title()),
-            const SizedBox(height: 30),
-            const Text(
-              'Identifying "dead code" and stylistic anti-patterns.',
-              style: TextStyle(color: Colors.white54, fontSize: 18),
+            Text(title, style: TextStyles().title()),
+            const SizedBox(height: 12),
+            Text(
+              subtitle,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 19,
+                fontWeight: FontWeight.w300,
+              ),
             ),
-            const SizedBox(height: 50),
+            const SizedBox(height: 48),
             ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 800),
-              child: CodeDisplay(code: code),
+              constraints: const BoxConstraints(maxWidth: 850),
+              child: child,
             ),
           ],
         ),
@@ -424,46 +591,34 @@ void main() {
   }
 }
 
-// ── REUSABLE UI COMPONENTS ───────────────────────────────────────────────────
-
-Widget _AnalyzerTaskCard({
+Widget _PipelineStep({
+  required String label,
   required IconData icon,
-  required String title,
-  required String desc,
-  required int delay,
+  required Color color,
+  bool highlight = false,
 }) {
   return AnimatedFadeUp(
-    delay: delay,
+    delay: highlight ? 400 : 100,
     child: Container(
-      width: 260,
-      padding: const EdgeInsets.all(28),
+      width: 80,
+      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
       decoration: BoxDecoration(
-        color: Colors.white.withAlpha(5),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white10),
+        color: highlight
+            ? AppColors.dartBlue.withAlpha(40)
+            : Colors.white.withAlpha(5),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: highlight ? AppColors.dartCyan : Colors.white12,
+        ),
       ),
       child: Column(
         children: [
-          Icon(icon, color: AppColors.dartCyan, size: 36),
-          const SizedBox(height: 20),
+          Icon(icon, color: color, size: 24),
+          const SizedBox(height: 8),
           Text(
-            title,
+            label,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              fontSize: 18,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            desc,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 14,
-              height: 1.4,
-            ),
+            style: TextStyle(color: color, fontSize: 11, height: 1.3),
           ),
         ],
       ),
@@ -471,102 +626,173 @@ Widget _AnalyzerTaskCard({
   );
 }
 
-Widget _CodeActionBox({
-  required String label,
-  required String code,
-  bool isActive = false,
-  VoidCallback? onTap,
-  bool isError = false,
-  String? errorMessage,
-  Color highlightColor = AppColors.dartBlue,
+Widget _Arrow() => const Padding(
+  padding: EdgeInsets.symmetric(horizontal: 6),
+  child: Icon(Icons.arrow_forward, color: Colors.white24, size: 20),
+);
+
+Widget _TaskCard({
+  required IconData icon,
+  required String title,
+  required String desc,
 }) {
-  return InkWell(
-    onTap: onTap,
+  return Container(
+    width: 230,
+    padding: const EdgeInsets.all(24),
+    decoration: BoxDecoration(
+      color: Colors.white.withAlpha(5),
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: Colors.white10),
+    ),
     child: Column(
       children: [
+        Icon(icon, color: AppColors.dartCyan, size: 30),
+        const SizedBox(height: 14),
         Text(
-          label,
+          title,
+          textAlign: TextAlign.center,
           style: const TextStyle(
-            color: AppColors.textMuted,
-            fontSize: 10,
-            letterSpacing: 1.5,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontSize: 16,
           ),
         ),
-        const SizedBox(height: 12),
-        AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          width: 200,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: isActive ? highlightColor.withAlpha(20) : Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isError
-                  ? Colors.redAccent
-                  : (isActive ? highlightColor : Colors.white10),
-              width: 2,
-            ),
-          ),
-          child: Center(
-            child: Text(
-              code,
-              style: TextStyle(
-                color: isError
-                    ? Colors.redAccent
-                    : (isActive ? Colors.white : Colors.white24),
-                fontFamily: 'monospace',
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+        const SizedBox(height: 10),
+        Text(
+          desc,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            color: AppColors.textSecondary,
+            fontSize: 13,
+            height: 1.4,
           ),
         ),
-        if (isError && errorMessage != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 16),
-            child: SizedBox(
-              width: 200,
-              child: Text(
-                errorMessage,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.redAccent,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
       ],
     ),
   );
 }
 
-Widget _InfoTile({required String title, required String desc}) {
+class _PromotionCodeView extends StatelessWidget {
+  final bool isPromoted;
+  const _PromotionCodeView({required this.isPromoted});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 440,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'String? name = getValue();',
+            style: TextStyle(
+              color: Colors.white38,
+              fontFamily: 'monospace',
+              fontSize: 14,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'if (name != null) {',
+            style: TextStyle(
+              color: isPromoted ? Colors.greenAccent : Colors.white70,
+              fontWeight: isPromoted ? FontWeight.bold : FontWeight.normal,
+              fontFamily: 'monospace',
+              fontSize: 14,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20, top: 4),
+            child: Text(
+              'print(name.length); // PROMOTED ✓',
+              style: TextStyle(
+                color: isPromoted ? Colors.greenAccent : Colors.white24,
+                fontFamily: 'monospace',
+                fontSize: 14,
+              ),
+            ),
+          ),
+          const Text(
+            '}',
+            style: TextStyle(
+              color: Colors.white70,
+              fontFamily: 'monospace',
+              fontSize: 14,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+Widget _OperatorCard({
+  required String op,
+  required String name,
+  required String expression,
+  required dynamic result,
+  required String desc,
+}) {
   return Container(
-    padding: const EdgeInsets.all(32),
+    width: 240,
+    padding: const EdgeInsets.all(22),
     decoration: BoxDecoration(
       color: Colors.white.withAlpha(5),
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: BorderRadius.circular(16),
       border: Border.all(color: Colors.white10),
     ),
     child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          title,
+          op,
           style: const TextStyle(
-            color: AppColors.dartCyan,
-            fontSize: 22,
+            fontSize: 36,
             fontWeight: FontWeight.bold,
+            color: AppColors.dartCyan,
+            fontFamily: 'monospace',
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          name,
+          style: const TextStyle(
+            color: AppColors.textMuted,
+            fontSize: 12,
+            letterSpacing: 1,
           ),
         ),
         const SizedBox(height: 16),
         Text(
+          expression,
+          style: const TextStyle(
+            color: Colors.white38,
+            fontSize: 12,
+            fontFamily: 'monospace',
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const Divider(height: 28, color: Colors.white10),
+        Text(
+          '$result',
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
           desc,
+          textAlign: TextAlign.center,
           style: const TextStyle(
             color: AppColors.textSecondary,
-            fontSize: 16,
-            height: 1.6,
+            fontSize: 12,
+            height: 1.4,
           ),
         ),
       ],
@@ -574,20 +800,20 @@ Widget _InfoTile({required String title, required String desc}) {
   );
 }
 
-Widget _LanguageCrashCard({
+Widget _CrashCard({
   required String lang,
   required String code,
-  required String result,
-  required Color resultColor,
+  required String verdict,
+  required String sub,
+  required Color verdictColor,
   required IconData icon,
-  bool isCompileError = false,
 }) {
   return Expanded(
     child: Container(
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
         color: Colors.white.withAlpha(5),
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.white10),
       ),
       child: Column(
@@ -597,44 +823,47 @@ Widget _LanguageCrashCard({
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
-              letterSpacing: 2,
+              letterSpacing: 1.5,
+              fontSize: 14,
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.black,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
               code,
               style: const TextStyle(
                 color: Colors.white70,
                 fontFamily: 'monospace',
+                fontSize: 14,
+                height: 1.5,
               ),
             ),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, color: resultColor, size: 20),
-              const SizedBox(width: 12),
+              Icon(icon, color: verdictColor, size: 20),
+              const SizedBox(width: 10),
               Text(
-                result,
+                verdict,
                 style: TextStyle(
-                  color: resultColor,
+                  color: verdictColor,
                   fontWeight: FontWeight.bold,
-                  fontSize: 16,
+                  fontSize: 15,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           Text(
-            isCompileError ? 'Zero risk for users.' : 'Crashes for users.',
+            sub,
             style: const TextStyle(color: Colors.white24, fontSize: 12),
           ),
         ],

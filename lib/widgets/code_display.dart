@@ -4,13 +4,16 @@ import 'package:flutter_highlighter/themes/vs2015.dart';
 
 class CodeDisplay extends StatelessWidget {
   final String code;
-  const CodeDisplay({Key? key, required this.code}) : super(key: key);
+  final double fontSize;
+
+  const CodeDisplay({Key? key, required this.code, this.fontSize = 15})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF1E1E1E), // Standard VS Code dark background
+        color: const Color(0xFF1E1E1E),
         borderRadius: BorderRadius.circular(8.0),
         boxShadow: [
           BoxShadow(
@@ -22,12 +25,13 @@ class CodeDisplay extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
         children: [
           // Window Header
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: const BoxDecoration(
-              color: Color(0xFF2D2D2D), // Slightly lighter header
+              color: Color(0xFF2D2D2D),
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(8.0),
                 topRight: Radius.circular(8.0),
@@ -43,7 +47,6 @@ class CodeDisplay extends StatelessWidget {
               ],
             ),
           ),
-
           // Syntax Highlighted Code
           Padding(
             padding: const EdgeInsets.all(16.0),
@@ -52,12 +55,10 @@ class CodeDisplay extends StatelessWidget {
               language: 'dart',
               theme: vs2015Theme,
               padding: EdgeInsets.zero,
-              textStyle: const TextStyle(
-                wordSpacing: 2.0,
-                fontFamily:
-                    'FiraCode', // Fallback to standard monospace if not imported
-                fontSize: 24,
-                height: 1.4, // Improves readability
+              textStyle: TextStyle(
+                fontFamily: 'monospace',
+                fontSize: fontSize,
+                height: 1.5,
               ),
             ),
           ),

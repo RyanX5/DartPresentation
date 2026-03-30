@@ -21,16 +21,20 @@ class DefaultSlide extends StatefulWidget {
 class _DefaultSlideState extends State<DefaultSlide> {
   int _currentIndex = 0;
   bool get _movedToCorner =>
-      _currentIndex != 0 && _currentIndex != widget.childrenSlides.length - 1;
+      _currentIndex != 0 && _currentIndex != _slides.length - 1;
 
   late FocusNode _focusNode;
+  late List<Widget> _slides;
 
   @override
   void initState() {
     super.initState();
     _focusNode = FocusNode();
-    widget.childrenSlides.insert(0, const SizedBox.shrink());
-    widget.childrenSlides.add(const SizedBox.shrink());
+    _slides = [
+      const SizedBox.shrink(),
+      ...widget.childrenSlides,
+      const SizedBox.shrink(),
+    ];
   }
 
   @override
@@ -40,17 +44,14 @@ class _DefaultSlideState extends State<DefaultSlide> {
   }
 
   void _next() {
-    if (_currentIndex < widget.childrenSlides.length - 1) {
+    if (_currentIndex < _slides.length - 1) {
       setState(() => _currentIndex++);
     }
   }
 
   void _prev() {
     setState(() {
-      _currentIndex = (_currentIndex - 1).clamp(
-        0,
-        widget.childrenSlides.length - 1,
-      );
+      _currentIndex = (_currentIndex - 1).clamp(0, _slides.length - 1);
     });
   }
 
@@ -70,13 +71,10 @@ class _DefaultSlideState extends State<DefaultSlide> {
         color: Colors.transparent,
         child: Stack(
           children: [
-            // ── Background ──────────────────────────────────────────────
             const _SlideBackground(),
 
-            // ── Decorative elements ──────────────────────────────────────
             const _DecorativeGrid(),
 
-            // ── Top accent bar ───────────────────────────────────────────
             Positioned(
               top: 0,
               left: 0,
@@ -97,7 +95,6 @@ class _DefaultSlideState extends State<DefaultSlide> {
               ),
             ),
 
-            // ── Bottom accent bar ────────────────────────────────────────
             Positioned(
               bottom: 0,
               left: 0,
@@ -108,7 +105,6 @@ class _DefaultSlideState extends State<DefaultSlide> {
               ),
             ),
 
-            // ── Title / subtitle block ───────────────────────────────────
             AnimatedAlign(
               duration: const Duration(milliseconds: 500),
               curve: Curves.easeInOut,
@@ -131,20 +127,18 @@ class _DefaultSlideState extends State<DefaultSlide> {
               ),
             ),
 
-            // ── Slide content ────────────────────────────────────────────
             _AnimatedSlideItem(
               key: ValueKey(_currentIndex),
-              child: widget.childrenSlides[_currentIndex],
+              child: _slides[_currentIndex],
             ),
 
-            // ── Frame dots indicator ─────────────────────────────────────
             if (_movedToCorner)
               Positioned(
                 bottom: 28,
                 left: 0,
                 right: 0,
                 child: _FrameDots(
-                  total: widget.childrenSlides.length - 2,
+                  total: _slides.length - 2,
                   current: _currentIndex - 1,
                 ),
               ),

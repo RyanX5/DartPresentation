@@ -17,21 +17,19 @@ class _RohanSlide3State extends State<RohanSlide3> {
   Widget build(BuildContext context) {
     return DefaultSlide(
       title: 'Names, Scopes & Bindings',
-      subtitle: 'How Dart binds values to names.',
+      subtitle: 'How Dart connects names to values.',
       childrenSlides: [
         const _DeclKeywords(),
+        const _BindingTime(),
         const _FinalVsConstBattle(),
         const _LexicalScopeVisual(),
+        const _ScopeShadowing(),
         const _ClosureMachine(),
         const _LateBindings(),
-        const _NullSafetyPromotion(),
-        const _NullOperatorPlayground(),
       ],
     );
   }
 }
-
-// ── FRAME 1: DECLARATION KEYWORDS ────────────────────────────────────────────
 
 class _DeclKeywords extends StatelessWidget {
   const _DeclKeywords();
@@ -43,8 +41,13 @@ class _DeclKeywords extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Declaration Styles', style: TextStyles().title()),
-            const SizedBox(height: 60),
+            Text('Declaration Keywords', style: TextStyles().title()),
+            const SizedBox(height: 20),
+            const Text(
+              'Dart gives you three ways to declare a name, each with a different contract.',
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 18),
+            ),
+            const SizedBox(height: 50),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -52,21 +55,24 @@ class _DeclKeywords extends StatelessWidget {
                   keyword: 'var',
                   color: AppColors.dartBlue,
                   label: 'INFERRED',
-                  desc: 'Type determined at first assignment. Reassignable.',
+                  desc:
+                      'Type determined at first assignment. Can be reassigned to any value of the same type.',
                 ),
                 const SizedBox(width: 24),
                 _KeywordCard(
                   keyword: 'final',
                   color: Colors.orangeAccent,
-                  label: 'RUNTIME',
-                  desc: 'Immutable once set. Initialized when accessed.',
+                  label: 'RUNTIME IMMUTABLE',
+                  desc:
+                      'Set once and evaluated when the line runs. Cannot be reassigned after initialization.',
                 ),
                 const SizedBox(width: 24),
                 _KeywordCard(
                   keyword: 'const',
                   color: Colors.greenAccent,
                   label: 'COMPILE-TIME',
-                  desc: 'Deeply immutable. Hard-coded into the binary.',
+                  desc:
+                      'Must be known at compile time. Hard-coded into the binary. Deeply immutable.',
                 ),
               ],
             ),
@@ -77,7 +83,75 @@ class _DeclKeywords extends StatelessWidget {
   }
 }
 
-// ── FRAME 2: FINAL VS CONST (The Logic Battle) ──────────────────────────────
+class _BindingTime extends StatelessWidget {
+  const _BindingTime();
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrapper(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Binding Time', style: TextStyles().title()),
+            const SizedBox(height: 16),
+            const Text(
+              'In PL theory, binding time = when a name gets connected to its value or type.',
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 18),
+            ),
+            const SizedBox(height: 50),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AnimatedFadeUp(
+                  delay: 200,
+                  child: _BindingTimeCard(
+                    phase: 'Compile Time',
+                    color: Colors.greenAccent,
+                    icon: Icons.build_outlined,
+                    examples: [
+                      'const pi = 3.14  →  value baked into binary',
+                      'var x = 42  →  type inferred as int',
+                      'Type errors flagged before execution',
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 20),
+                AnimatedFadeUp(
+                  delay: 450,
+                  child: _BindingTimeCard(
+                    phase: 'Load Time',
+                    color: Colors.orangeAccent,
+                    icon: Icons.upload_outlined,
+                    examples: [
+                      'Top-level variables initialized',
+                      'Static class fields set up',
+                      'Library imports resolved',
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 20),
+                AnimatedFadeUp(
+                  delay: 700,
+                  child: _BindingTimeCard(
+                    phase: 'Runtime',
+                    color: AppColors.dartCyan,
+                    icon: Icons.play_arrow_outlined,
+                    examples: [
+                      'final now = DateTime.now()',
+                      'Instance fields via constructors',
+                      'Function parameters per call',
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class _FinalVsConstBattle extends StatelessWidget {
   const _FinalVsConstBattle();
@@ -86,59 +160,29 @@ class _FinalVsConstBattle extends StatelessWidget {
   Widget build(BuildContext context) {
     const code = '''
 void main() {
-  // FINAL: Can be set via a runtime calculation
-  final now = DateTime.now(); 
-  
-  // CONST: Must be known at compile time
+  // FINAL is evaluated at runtime, set once
+  final now = DateTime.now(); // OK: runtime value
+  // now = DateTime.now();    // ERROR: can't reassign
+
+  // CONST must be known at compile time
   const pi = 3.14159;
+  // const t = DateTime.now(); // ERROR: not compile-time
+
+  // const gives deep immutability on collections
+  const colors = ['red', 'green', 'blue'];
+  // colors.add('yellow'); // ERROR because immutable list
   
-  // const time = DateTime.now(); // ERROR!
+  final mutable = ['red', 'green'];
+  mutable.add('blue'); // OK: final != immutable contents
 }''';
 
-    return Wrapper(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Runtime vs. Compile-time', style: TextStyles().title()),
-            const SizedBox(height: 50),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _ConstraintBox(
-                  title: 'FINAL',
-                  points: [
-                    'Evaluated at runtime',
-                    'Instance-level',
-                    'Set once per object',
-                  ],
-                ),
-                const SizedBox(width: 40),
-                const Icon(Icons.bolt, color: Colors.orangeAccent, size: 40),
-                const SizedBox(width: 40),
-                _ConstraintBox(
-                  title: 'CONST',
-                  points: [
-                    'Evaluated at compile-time',
-                    'Canonicalized (Memory efficient)',
-                    'Deeply immutable collections',
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 50),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 700),
-              child: CodeDisplay(code: code),
-            ),
-          ],
-        ),
-      ),
+    return _CodeFrameLayout(
+      title: 'final vs const',
+      subtitle: 'Both prevent reassignment, but const goes deeper.',
+      child: CodeDisplay(code: code),
     );
   }
 }
-
-// ── FRAME 3: LEXICAL SCOPE (Visualizing the Nest) ───────────────────────────
 
 class _LexicalScopeVisual extends StatelessWidget {
   const _LexicalScopeVisual();
@@ -151,34 +195,81 @@ class _LexicalScopeVisual extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text('Lexical Scoping', style: TextStyles().title()),
-            const SizedBox(height: 60),
+            const SizedBox(height: 16),
+            const Text(
+              "A name's scope is determined by where it's written, NOT where it's called from.",
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 18),
+            ),
+            const SizedBox(height: 40),
+            // Nested scope diagram
             Container(
-              width: 800,
-              padding: const EdgeInsets.all(40),
+              constraints: const BoxConstraints(maxWidth: 860),
+              padding: const EdgeInsets.all(28),
               decoration: BoxDecoration(
                 border: Border.all(color: AppColors.dartBlue, width: 2),
                 borderRadius: BorderRadius.circular(20),
                 color: AppColors.dartBlue.withAlpha(10),
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _ScopeLabel('TOP-LEVEL SCOPE (void main)'),
-                  const SizedBox(height: 20),
+                  _ScopeLabel('TOP-LEVEL SCOPE'),
+                  const SizedBox(height: 6),
+                  const Text(
+                    'var x = 10;',
+                    style: TextStyle(
+                      color: Colors.white54,
+                      fontFamily: 'monospace',
+                      fontSize: 15,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                   Container(
-                    padding: const EdgeInsets.all(30),
+                    padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       border: Border.all(color: AppColors.dartCyan, width: 2),
                       borderRadius: BorderRadius.circular(12),
-                      color: AppColors.dartCyan.withAlpha(20),
+                      color: AppColors.dartCyan.withAlpha(12),
                     ),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _ScopeLabel('LOCAL SCOPE (if / for / func)'),
-                        const SizedBox(height: 16),
+                        _ScopeLabel('FUNCTION SCOPE'),
+                        const SizedBox(height: 6),
                         const Text(
-                          'Inner scopes can see "outward," but outer scopes cannot see "inward."',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white70, fontSize: 18),
+                          'var y = 20;',
+                          style: TextStyle(
+                            color: Colors.white54,
+                            fontFamily: 'monospace',
+                            fontSize: 15,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.greenAccent.withAlpha(120),
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.greenAccent.withAlpha(8),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _ScopeLabel('INNER SCOPE  (if / for / block)'),
+                              const SizedBox(height: 6),
+                              const Text(
+                                'print(x); //  sees top-level x\nprint(y); //  sees function y\n// x and y not visible from outer scopes',
+                                style: TextStyle(
+                                  color: Colors.greenAccent,
+                                  fontFamily: 'monospace',
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -193,7 +284,32 @@ class _LexicalScopeVisual extends StatelessWidget {
   }
 }
 
-// ── FRAME 4: THE CLOSURE MACHINE (Interactive State) ─────────────────────────
+class _ScopeShadowing extends StatelessWidget {
+  const _ScopeShadowing();
+
+  @override
+  Widget build(BuildContext context) {
+    const code = '''
+var name = 'Global';  // top-level binding
+
+void greet() {
+  var name = 'Local'; // shadows the outer 'name'
+  print(name);        // Local inner binding wins
+}
+
+void main() {
+  greet();        // prints: Local
+  print(name);    // prints: Global outer untouched
+}''';
+
+    return _CodeFrameLayout(
+      title: 'Variable Shadowing',
+      subtitle:
+          "An inner scope can redeclare a name from an outer scope. The outer binding isn't destroyed, just hidden.",
+      child: CodeDisplay(code: code),
+    );
+  }
+}
 
 class _ClosureMachine extends StatefulWidget {
   const _ClosureMachine();
@@ -203,105 +319,141 @@ class _ClosureMachine extends StatefulWidget {
 }
 
 class _ClosureMachineState extends State<_ClosureMachine> {
-  int _internalValue = 0;
+  int _count = 0;
   final List<String> _logs = [];
 
-  void _runClosure() {
-    setState(() {
-      _internalValue++;
-      _logs.insert(0, 'Closure called! count is now: $_internalValue');
-    });
-  }
+  void _call() => setState(() {
+    _count++;
+    _logs.insert(0, 'call #$_count  →  count = $_count');
+  });
+
+  void _reset() => setState(() {
+    _count = 0;
+    _logs.clear();
+  });
 
   @override
   Widget build(BuildContext context) {
     const code = '''
 Function makeCounter() {
-  int count = 0; // The captured variable
-  return () => count++; 
-}''';
+  int count = 0;      // captured variable
+  return () {
+    count++;          // mutates the captured env
+    print(count);
+  };
+}
 
-    return Wrapper(
-      child: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Closures', style: TextStyles().title()),
-                  const SizedBox(height: 24),
-                  const Text(
-                    'Functions that "capture" their environment.',
-                    style: TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 18,
-                    ),
+// Each call to makeCounter() gets its OWN count
+var c1 = makeCounter();
+var c2 = makeCounter();
+c1(); c1(); // 1, 2
+c2();       // 1 = independent environment''';
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 60),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Closures', style: TextStyles().title()),
+                const SizedBox(height: 10),
+                const Text(
+                  'A function that captures and retains its enclosing environment,\neven after the outer function has returned.',
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 16,
+                    height: 1.4,
                   ),
-                  const SizedBox(height: 40),
-                  CodeDisplay(code: code),
-                ],
-              ),
+                ),
+                const SizedBox(height: 24),
+                CodeDisplay(code: code),
+              ],
             ),
-            const SizedBox(width: 80),
-            Container(
-              width: 350,
-              height: 450,
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.white10),
-              ),
-              child: Column(
-                children: [
-                  const Text(
-                    'ENVIRONMENT STATE',
-                    style: TextStyle(color: AppColors.textMuted, fontSize: 12),
+          ),
+          const SizedBox(width: 40),
+          // Live state box
+          Container(
+            width: 280,
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.white10),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'ENVIRONMENT STATE',
+                  style: TextStyle(
+                    color: AppColors.textMuted,
+                    fontSize: 10,
+                    letterSpacing: 2,
                   ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'count: $_internalValue',
+                ),
+                const SizedBox(height: 12),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  child: Text(
+                    'count: $_count',
+                    key: ValueKey(_count),
                     style: const TextStyle(
-                      fontSize: 48,
+                      fontSize: 38,
                       fontWeight: FontWeight.bold,
                       color: Colors.greenAccent,
+                      fontFamily: 'monospace',
                     ),
                   ),
-                  const SizedBox(height: 30),
-                  ElevatedButton(
-                    onPressed: _runClosure,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.dartBlue,
-                      foregroundColor: Colors.white,
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: _call,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.dartBlue,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('counter()'),
                     ),
-                    child: const Text('TRIGGER CLOSURE'),
-                  ),
-                  const SizedBox(height: 30),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: _logs.length,
-                      itemBuilder: (context, i) => Text(
-                        _logs[i],
-                        style: const TextStyle(
-                          color: Colors.white24,
-                          fontSize: 12,
-                        ),
+                    const SizedBox(width: 10),
+                    OutlinedButton(
+                      onPressed: _reset,
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.white54,
+                        side: const BorderSide(color: Colors.white12),
+                      ),
+                      child: const Text('reset'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  height: 100,
+                  child: ListView.builder(
+                    itemCount: _logs.length,
+                    itemBuilder: (_, i) => Text(
+                      _logs[i],
+                      style: TextStyle(
+                        color: Colors.white.withAlpha(i == 0 ? 160 : 50),
+                        fontSize: 11,
+                        fontFamily: 'monospace',
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
-
-// ── FRAME 5: LATE BINDINGS (Lazy Initialization) ────────────────────────────
 
 class _LateBindings extends StatelessWidget {
   const _LateBindings();
@@ -309,118 +461,75 @@ class _LateBindings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const code = '''
-class ApiService {
-  // Promised to be initialized before use
-  late String _apiKey;
+class DatabaseService {
+  // Declared non-nullable, but not yet bound to a value.
+  // Dart trusts you to initialize it before use.
+  late String connectionString;
 
-  void init() {
-    _apiKey = 'secret_123';
+  void connect(String url) {
+    connectionString = url;  // binding happens here
   }
-}''';
 
-    return Wrapper(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Late Bindings', style: TextStyles().title()),
-            const SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _LateIconBox(
-                  Icons.timer_outlined,
-                  'Lazy Loading',
-                  'Only initialized when first accessed.',
-                ),
-                const SizedBox(width: 24),
-                _LateIconBox(
-                  Icons.verified_user_outlined,
-                  'Non-Nullable',
-                  'Allows non-null variables without an immediate value.',
-                ),
-              ],
-            ),
-            const SizedBox(height: 60),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 800),
-              child: CodeDisplay(code: code),
-            ),
-          ],
-        ),
-      ),
+  void query(String sql) {
+    // If connect() was never called, this throws LateInitializationError
+    print('\$connectionString: \$sql');
+  }
+}
+
+// Also useful for lazy initialization (computed once, on first access):
+late List<int> expensiveData = _compute(); // only runs when first read''';
+
+    return _CodeFrameLayout(
+      title: 'Late Bindings',
+      subtitle:
+          'Deferred binding: The name exists now, the value arrives later.',
+      child: CodeDisplay(code: code),
     );
   }
 }
 
-// ── FRAME 6: FLOW ANALYSIS & PROMOTION (Interactive) ─────────────────────────
+class _CodeFrameLayout extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final Widget child;
 
-class _NullSafetyPromotion extends StatefulWidget {
-  const _NullSafetyPromotion();
-
-  @override
-  State<_NullSafetyPromotion> createState() => _NullSafetyPromotionState();
-}
-
-class _NullSafetyPromotionState extends State<_NullSafetyPromotion> {
-  bool _isPromoted = false;
+  const _CodeFrameLayout({
+    required this.title,
+    required this.subtitle,
+    required this.child,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Wrapper(
-      child: Center(
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 60),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Flow Analysis', style: TextStyles().title()),
-            const SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Column(
-                  children: [
-                    const Text(
-                      'SOURCE CODE',
-                      style: TextStyle(
-                        color: AppColors.textMuted,
-                        fontSize: 12,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    _PromotionCodeView(isPromoted: _isPromoted),
-                  ],
+            AnimatedFadeUp(
+              delay: 100,
+              child: Text(title, style: TextStyles().title()),
+            ),
+            const SizedBox(height: 8),
+            AnimatedFadeUp(
+              delay: 200,
+              child: Text(
+                subtitle,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 17,
                 ),
-                const SizedBox(width: 60),
-                Column(
-                  children: [
-                    const Text(
-                      'TYPE STATUS',
-                      style: TextStyle(
-                        color: AppColors.textMuted,
-                        fontSize: 12,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    _TypeChip(label: 'String?', isActive: !_isPromoted),
-                    const Icon(Icons.arrow_downward, color: Colors.white24),
-                    _TypeChip(
-                      label: 'String',
-                      isActive: _isPromoted,
-                      color: Colors.greenAccent,
-                    ),
-                    const SizedBox(height: 40),
-                    Switch(
-                      value: _isPromoted,
-                      onChanged: (v) => setState(() => _isPromoted = v),
-                      activeColor: Colors.greenAccent,
-                    ),
-                    const Text(
-                      'SIMULATE NULL-CHECK',
-                      style: TextStyle(color: Colors.white54, fontSize: 12),
-                    ),
-                  ],
-                ),
-              ],
+              ),
+            ),
+            const SizedBox(height: 28),
+            AnimatedFadeUp(
+              delay: 300,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 860),
+                child: child,
+              ),
             ),
           ],
         ),
@@ -428,70 +537,6 @@ class _NullSafetyPromotionState extends State<_NullSafetyPromotion> {
     );
   }
 }
-
-// ── FRAME 7: NULL OPERATOR PLAYGROUND ────────────────────────────────────────
-
-class _NullOperatorPlayground extends StatefulWidget {
-  const _NullOperatorPlayground();
-
-  @override
-  State<_NullOperatorPlayground> createState() =>
-      _NullOperatorPlaygroundState();
-}
-
-class _NullOperatorPlaygroundState extends State<_NullOperatorPlayground> {
-  String? _input;
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrapper(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Null Operators', style: TextStyles().title()),
-            const SizedBox(height: 60),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _OperatorTrial(
-                  op: '??',
-                  input: _input,
-                  fallback: '"Guest"',
-                  result: _input ?? "Guest",
-                ),
-                const SizedBox(width: 24),
-                _OperatorTrial(
-                  op: '?.',
-                  input: _input,
-                  fallback: 'toUpperCase()',
-                  result: _input?.toUpperCase() ?? "null",
-                ),
-              ],
-            ),
-            const SizedBox(height: 50),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () => setState(() => _input = null),
-                  child: const Text('Set Input to NULL'),
-                ),
-                const SizedBox(width: 20),
-                ElevatedButton(
-                  onPressed: () => setState(() => _input = "Rohan"),
-                  child: const Text('Set Input to "Rohan"'),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ── REUSABLE UI FRAGMENTS ───────────────────────────────────────────────────
 
 Widget _KeywordCard({
   required String keyword,
@@ -500,10 +545,10 @@ Widget _KeywordCard({
   required String desc,
 }) {
   return Container(
-    width: 260,
-    padding: const EdgeInsets.all(28),
+    width: 240,
+    padding: const EdgeInsets.all(24),
     decoration: BoxDecoration(
-      color: color.withAlpha(10),
+      color: color.withAlpha(12),
       borderRadius: BorderRadius.circular(20),
       border: Border.all(color: color.withAlpha(100)),
     ),
@@ -513,12 +558,12 @@ Widget _KeywordCard({
           label,
           style: TextStyle(
             color: color,
-            fontSize: 12,
+            fontSize: 10,
             fontWeight: FontWeight.bold,
             letterSpacing: 1.5,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
         Text(
           keyword,
           style: TextStyle(
@@ -528,13 +573,13 @@ Widget _KeywordCard({
             fontFamily: 'monospace',
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         Text(
           desc,
           textAlign: TextAlign.center,
           style: const TextStyle(
             color: AppColors.textSecondary,
-            fontSize: 15,
+            fontSize: 14,
             height: 1.4,
           ),
         ),
@@ -543,33 +588,61 @@ Widget _KeywordCard({
   );
 }
 
-Widget _ConstraintBox({required String title, required List<String> points}) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        title,
-        style: const TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.w900,
-          color: Colors.white,
-          letterSpacing: 2,
+Widget _BindingTimeCard({
+  required String phase,
+  required Color color,
+  required IconData icon,
+  required List<String> examples,
+}) {
+  return Container(
+    width: 260,
+    padding: const EdgeInsets.all(24),
+    decoration: BoxDecoration(
+      color: color.withAlpha(12),
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(color: color.withAlpha(80)),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(icon, color: color, size: 22),
+            const SizedBox(width: 10),
+            Text(
+              phase,
+              style: TextStyle(
+                color: color,
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
-      ),
-      const SizedBox(height: 20),
-      ...points.map(
-        (p) => Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: Row(
-            children: [
-              const Icon(Icons.circle, size: 6, color: AppColors.dartCyan),
-              const SizedBox(width: 12),
-              Text(p, style: const TextStyle(color: AppColors.textSecondary)),
-            ],
+        const SizedBox(height: 18),
+        ...examples.map(
+          (e) => Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('·  ', style: TextStyle(color: color, fontSize: 18)),
+                Expanded(
+                  child: Text(
+                    e,
+                    style: const TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 13,
+                      height: 1.4,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    ],
+      ],
+    ),
   );
 }
 
@@ -577,161 +650,10 @@ Widget _ScopeLabel(String text) {
   return Text(
     text,
     style: const TextStyle(
-      fontSize: 12,
+      fontSize: 10,
       fontWeight: FontWeight.bold,
       letterSpacing: 2,
-      color: Colors.white54,
-    ),
-  );
-}
-
-Widget _LateIconBox(IconData icon, String title, String desc) {
-  return Container(
-    width: 300,
-    padding: const EdgeInsets.all(24),
-    decoration: BoxDecoration(
-      color: Colors.white.withAlpha(5),
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: Colors.white10),
-    ),
-    child: Column(
-      children: [
-        Icon(icon, color: AppColors.dartCyan, size: 32),
-        const SizedBox(height: 16),
-        Text(
-          title,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          desc,
-          textAlign: TextAlign.center,
-          style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
-        ),
-      ],
-    ),
-  );
-}
-
-class _PromotionCodeView extends StatelessWidget {
-  final bool isPromoted;
-  const _PromotionCodeView({required this.isPromoted});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 500,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.black,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'String? name = getMaybeName();',
-            style: TextStyle(color: Colors.white38, fontFamily: 'monospace'),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'if (name != null) {',
-            style: TextStyle(
-              color: isPromoted ? Colors.greenAccent : Colors.white,
-              fontWeight: isPromoted ? FontWeight.bold : FontWeight.normal,
-              fontFamily: 'monospace',
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, top: 4),
-            child: Text(
-              'print(name.length); // PROMOTED!',
-              style: TextStyle(
-                color: isPromoted ? Colors.greenAccent : Colors.white24,
-                fontFamily: 'monospace',
-              ),
-            ),
-          ),
-          const Text(
-            '}',
-            style: TextStyle(color: Colors.white, fontFamily: 'monospace'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-Widget _TypeChip({
-  required String label,
-  required bool isActive,
-  Color color = AppColors.dartCyan,
-}) {
-  return AnimatedOpacity(
-    duration: const Duration(milliseconds: 300),
-    opacity: isActive ? 1.0 : 0.2,
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      decoration: BoxDecoration(
-        color: color.withAlpha(30),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(color: color, fontWeight: FontWeight.bold),
-      ),
-    ),
-  );
-}
-
-Widget _OperatorTrial({
-  required String op,
-  required String? input,
-  required String fallback,
-  required dynamic result,
-}) {
-  return Container(
-    width: 280,
-    padding: const EdgeInsets.all(24),
-    decoration: BoxDecoration(
-      color: Colors.white.withAlpha(5),
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: Colors.white10),
-    ),
-    child: Column(
-      children: [
-        Text(
-          op,
-          style: const TextStyle(
-            fontSize: 40,
-            fontWeight: FontWeight.bold,
-            color: AppColors.dartCyan,
-            fontFamily: 'monospace',
-          ),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          '${input ?? "null"} $op $fallback',
-          style: const TextStyle(
-            color: Colors.white54,
-            fontSize: 14,
-            fontFamily: 'monospace',
-          ),
-        ),
-        const Divider(height: 32, color: Colors.white10),
-        Text(
-          'RESULT: $result',
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
-        ),
-      ],
+      color: Colors.white38,
     ),
   );
 }

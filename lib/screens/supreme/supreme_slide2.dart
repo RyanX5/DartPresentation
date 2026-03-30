@@ -129,7 +129,7 @@ Widget SupremeSlide2Frame2() {
             delay: 100,
             child: Text(
               "Sample code",
-              style: TextStyles(color: Colors.black).heading1(),
+              style: TextStyles(color: Colors.white).heading1(),
             ),
           ),
           AnimatedFadeUp(
@@ -236,7 +236,7 @@ Widget SupremeSlide2Frame4() {
             delay: 100,
             child: Text(
               "Sample code",
-              style: TextStyles(color: Colors.black).heading1(),
+              style: TextStyles(color: Colors.white).heading1(),
             ),
           ),
           AnimatedFadeUp(
@@ -250,7 +250,7 @@ Widget SupremeSlide2Frame4() {
             delay: 5000,
             child: Text(
               "Both point to the same '10' object in the memory",
-              style: TextStyles(color: Colors.black).heading1(),
+              style: TextStyles(color: Colors.white).heading1(),
             ),
           ),
         ],
@@ -351,7 +351,7 @@ Widget SupremeSlide2Frame6() {
             delay: 100,
             child: Text(
               "Sample code",
-              style: TextStyles(color: Colors.black).heading1(),
+              style: TextStyles(color: Colors.white).heading1(),
             ),
           ),
           AnimatedFadeUp(
@@ -462,7 +462,7 @@ Widget SupremeSlide2Frame8() {
             delay: 100,
             child: Text(
               "Sample code",
-              style: TextStyles(color: Colors.black).heading1(),
+              style: TextStyles(color: Colors.white).heading1(),
             ),
           ),
           AnimatedFadeUp(
@@ -559,7 +559,7 @@ Widget SupremeSlide2Frame10() {
             delay: 100,
             child: Text(
               "Sample code",
-              style: TextStyles(color: Colors.black).heading1(),
+              style: TextStyles(color: Colors.white).heading1(),
             ),
           ),
           AnimatedFadeUp(
@@ -652,7 +652,7 @@ Widget SupremeSlide2Frame12() {
             delay: 100,
             child: Text(
               "Sample code",
-              style: TextStyles(color: Colors.black).heading1(),
+              style: TextStyles(color: Colors.white).heading1(),
             ),
           ),
           AnimatedFadeUp(
@@ -666,7 +666,7 @@ Widget SupremeSlide2Frame12() {
             delay: 5000,
             child: Text(
               "String and String? are not the same",
-              style: TextStyles(color: Colors.black).heading1(),
+              style: TextStyles(color: Colors.white).heading1(),
             ),
           ),
         ],

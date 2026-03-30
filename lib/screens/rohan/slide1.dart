@@ -63,7 +63,7 @@ Widget _OriginTimeline() {
                     _TimelineNode(
                       year: '2011',
                       title: 'The Google Reveal',
-                      desc: 'Created by Lars Bak and Kasper Lund at Google.',
+                      desc: 'Created by Lars Bak and Kasper at Google.',
                       isLeft: true,
                       delay: 300,
                     ),
@@ -77,7 +77,7 @@ Widget _OriginTimeline() {
                     ),
                     _TimelineNode(
                       year: 'Reality',
-                      title: 'The Pushback',
+                      title: 'Not Favorable',
                       desc:
                           'The web community resisted; the Chrome VM plan was scrapped.',
                       isLeft: true,
@@ -94,15 +94,12 @@ Widget _OriginTimeline() {
   );
 }
 
-// ── FRAME 2: THE PIVOT (Hot Reload Demo) ─────────────────────────────────────
-
 class _ThePivotInteractive extends StatefulWidget {
   @override
   State<_ThePivotInteractive> createState() => _ThePivotInteractiveState();
 }
 
 class _ThePivotInteractiveState extends State<_ThePivotInteractive> {
-  // State for our "Live Preview"
   Color _previewColor = AppColors.dartCyan;
   double _borderRadius = 12.0;
   String _buttonText = "TAP ME";
@@ -136,14 +133,13 @@ class _ThePivotInteractiveState extends State<_ThePivotInteractive> {
     return Wrapper(
       child: Row(
         children: [
-          // ── LEFT: The Technical Depth ──────────────────────────────────────
           Expanded(
             flex: 1,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('The 2017 Pivot', style: TextStyles().title()),
+                Text('Flutter Pivot', style: TextStyles().title()),
                 const SizedBox(height: 24),
                 AnimatedFadeUp(
                   delay: 200,
@@ -156,7 +152,7 @@ class _ThePivotInteractiveState extends State<_ThePivotInteractive> {
                 _TechDetail(
                   title: 'Just-In-Time (JIT) Compilation',
                   desc:
-                      'Used during development to enable "Hot Reload"—instantly updating UI while preserving application state.',
+                      'Used during development to enable "Hot Reload", instantly updating UI while preserving application state.',
                   icon: Icons.bolt,
                   delay: 400,
                 ),
@@ -174,7 +170,6 @@ class _ThePivotInteractiveState extends State<_ThePivotInteractive> {
 
           const SizedBox(width: 40),
 
-          // ── RIGHT: The "IDE" Simulator ─────────────────────────────────────
           Expanded(
             flex: 1,
             child: Column(
@@ -259,15 +254,6 @@ class _ThePivotInteractiveState extends State<_ThePivotInteractive> {
                           child: CircularProgressIndicator(color: Colors.white),
                         ),
                     ],
-                  ),
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  "Click the device button to 'Hot Reload'",
-                  style: TextStyle(
-                    color: AppColors.textMuted,
-                    fontSize: 14,
-                    fontStyle: FontStyle.italic,
                   ),
                 ),
               ],
@@ -394,7 +380,6 @@ class _PlatformEcosystemState extends State<_PlatformEcosystem> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ── LEFT: Target Selector ────────────────────────────────────
                 SizedBox(
                   width: 280,
                   child: Column(
@@ -412,7 +397,6 @@ class _PlatformEcosystemState extends State<_PlatformEcosystem> {
 
                 const SizedBox(width: 40),
 
-                // ── RIGHT: The "Spec Sheet" ──────────────────────────────────
                 Expanded(
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 300),
@@ -438,7 +422,6 @@ class _PlatformEcosystemState extends State<_PlatformEcosystem> {
                                   color: AppColors.dartCyan,
                                 ),
                               ),
-                              _StatusChip('READY FOR BUILD'),
                             ],
                           ),
                           const SizedBox(height: 30),
@@ -470,7 +453,7 @@ class _PlatformEcosystemState extends State<_PlatformEcosystem> {
                               child: Row(
                                 children: [
                                   const Icon(
-                                    Icons.bolt,
+                                    Icons.circle,
                                     color: Colors.orangeAccent,
                                     size: 18,
                                   ),
@@ -522,8 +505,6 @@ class _PlatformEcosystemState extends State<_PlatformEcosystem> {
     );
   }
 }
-
-// ── REUSABLE UI FRAGMENTS ───────────────────────────────────────────────────
 
 Widget _PlatformTab({
   required String label,
@@ -618,19 +599,17 @@ Widget _StatusChip(String label) {
   );
 }
 
-// ── FRAME 4: PROS & CONS (The Split View) ─────────────────────────────────────
-
 Widget _ProsConsBattle() {
   return Wrapper(
     child: Column(
       children: [
-        Text('The Verdict', style: TextStyles().title()),
+        Text('Pros & Cons', style: TextStyles().title()),
         const SizedBox(height: 60),
         Expanded(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // ── PROS ──────────────────────────────────────────────────────
+              //Pros
               Expanded(
                 child: _SimpleVerdictCard(
                   title: 'ADVANTAGES',
@@ -648,7 +627,7 @@ Widget _ProsConsBattle() {
 
               const SizedBox(width: 40),
 
-              // ── CONS ──────────────────────────────────────────────────────
+              //CONS
               Expanded(
                 child: _SimpleVerdictCard(
                   title: 'CHALLENGES',
@@ -671,7 +650,7 @@ Widget _ProsConsBattle() {
   );
 }
 
-// ── SIMPLIFIED CARD WIDGET ──────────────────────────────────────────────────
+//
 
 Widget _SimpleVerdictCard({
   required String title,
@@ -734,7 +713,6 @@ Widget _SimpleVerdictCard({
     ),
   );
 }
-// ── HELPER WIDGETS ───────────────────────────────────────────────────────────
 
 Widget _TimelineNode({
   required String year,

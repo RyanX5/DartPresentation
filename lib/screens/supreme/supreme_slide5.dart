@@ -112,7 +112,7 @@ Widget SupremeSlide5Frame2() {
             delay: 100,
             child: Text(
               "Sample code",
-              style: TextStyles(color: Colors.black).heading1(),
+              style: TextStyles(color: Colors.white).heading1(),
             ),
           ),
           AnimatedFadeUp(

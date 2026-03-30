@@ -132,7 +132,7 @@ Widget SupremeSlide3Frame2() {
             delay: 100,
             child: Text(
               "Sample code",
-              style: TextStyles(color: Colors.black).heading1(),
+              style: TextStyles(color: Colors.white).heading1(),
             ),
           ),
           AnimatedFadeUp(
@@ -244,7 +244,7 @@ Widget SupremeSlide3Frame4() {
             delay: 100,
             child: Text(
               "Sample code",
-              style: TextStyles(color: Colors.black).heading1(),
+              style: TextStyles(color: Colors.white).heading1(),
             ),
           ),
           AnimatedFadeUp(
@@ -358,7 +358,7 @@ Widget SupremeSlide3Frame6() {
             delay: 100,
             child: Text(
               "Sample code",
-              style: TextStyles(color: Colors.black).heading1(),
+              style: TextStyles(color: Colors.white).heading1(),
             ),
           ),
           AnimatedFadeUp(
@@ -472,7 +472,7 @@ Widget SupremeSlide3Frame8() {
             delay: 100,
             child: Text(
               "Sample code",
-              style: TextStyles(color: Colors.black).heading1(),
+              style: TextStyles(color: Colors.white).heading1(),
             ),
           ),
           AnimatedFadeUp(
@@ -558,7 +558,7 @@ Widget SupremeSlide3Frame10() {
             delay: 100,
             child: Text(
               "Sample code",
-              style: TextStyles(color: Colors.black).heading1(),
+              style: TextStyles(color: Colors.white).heading1(),
             ),
           ),
           AnimatedFadeUp(
@@ -641,7 +641,7 @@ Widget SupremeSlide3Frame12() {
             delay: 100,
             child: Text(
               "Sample code",
-              style: TextStyles(color: Colors.black).heading1(),
+              style: TextStyles(color: Colors.white).heading1(),
             ),
           ),
           AnimatedFadeUp(
