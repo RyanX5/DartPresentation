@@ -18,169 +18,134 @@ class _RohanSlide2State extends State<RohanSlide2> {
     return DefaultSlide(
       title: 'Syntax',
       subtitle: 'Familiar, but with upgrades.',
-      childrenSlides: [_Frame1(), _Frame2(), _Frame3(), _Frame4()],
+      childrenSlides: [
+        const _StructureSpotlight(),
+        const _BoilerplateBattle(),
+        const _InterpolationTheory(),
+        const _InterpolationPlayground(),
+        const _ArrowSyntax(),
+        const _OperatorSugar(),
+        const _CommentsMetadata(),
+      ],
     );
   }
 }
 
-Widget _Frame1() {
-  return Wrapper(
-    child: Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('Program Structure', style: TextStyles().title()),
-          const SizedBox(height: 60),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 800),
-            child: Column(
-              spacing: 24,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AnimatedFadeUp(
-                  delay: 300,
-                  child: _Bullet(
-                    'C-style syntax — curly braces, semicolons, familiar to Java devs',
-                  ),
-                ),
-                AnimatedFadeUp(
-                  delay: 550,
-                  child: _Bullet(
-                    'Every program starts at top-level void main() — no class required',
-                  ),
-                ),
-                AnimatedFadeUp(
-                  delay: 800,
-                  child: _Bullet(
-                    'Everything is an object — even int and bool are classes under the hood',
-                  ),
-                ),
-                AnimatedFadeUp(
-                  delay: 1050,
-                  child: _Bullet(
-                    'No access modifier keywords — prefix with _ to mark something private',
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
+// ── FRAME 1: PROGRAM STRUCTURE (Expanded) ───────────────────────────────────
 
-Widget _Frame2() {
-  const code = '''
-void main() {
-  // Everything starts here — no class needed
-  print('Hello, Dart!');
-
-  int age = 21;
-  double gpa = 3.8;
-  bool isGraduating = true;
-
-  print(age);          // 21
-  print(gpa);          // 3.8
-  print(isGraduating); // true
-}''';
-
-  return _CodeFrame(title: 'Hello World', code: code);
-}
-
-Widget _Frame3() {
-  return Wrapper(
-    child: Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('String Interpolation', style: TextStyles().title()),
-          const SizedBox(height: 60),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 800),
-            child: Column(
-              spacing: 24,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AnimatedFadeUp(
-                  delay: 300,
-                  child: _Bullet(
-                    r'Use $variable directly inside a string — no concatenation needed',
-                  ),
-                ),
-                AnimatedFadeUp(
-                  delay: 550,
-                  child: _Bullet(
-                    r'Use ${expression} for any full expression inside a string',
-                  ),
-                ),
-                AnimatedFadeUp(
-                  delay: 800,
-                  child: _Bullet(
-                    'In Java: "Hello, " + name + "!"  —  Dart makes this much cleaner',
-                  ),
-                ),
-                AnimatedFadeUp(
-                  delay: 1050,
-                  child: _Bullet(
-                    'Similar to Python f-strings, but no f prefix needed at all',
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-Widget _Frame4() {
-  const code = r'''
-void main() {
-  String name = 'Rohan';
-  int year = 2025;
-
-  // $variable — simple interpolation
-  print('Hello, $name!');            // Hello, Rohan!
-
-  // ${expression} — any expression works
-  print('Graduating in ${year + 1}'); // Graduating in 2026
-
-  // Compare:
-  // Java:   "Hello, " + name + "!"
-  // Python: f"Hello, {name}!"
-  // Dart:   'Hello, $name!'        ← cleanest
-}''';
-
-  return _CodeFrame(title: 'String Interpolation', code: code);
-}
-
-class _CodeFrame extends StatelessWidget {
-  final String title;
-  final String code;
-  const _CodeFrame({required this.title, required this.code});
+class _StructureSpotlight extends StatelessWidget {
+  const _StructureSpotlight();
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 60),
+    return Wrapper(
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AnimatedFadeUp(
-              delay: 100,
-              child: Text(title, style: TextStyles().heading1()),
+            Text('Program Structure', style: TextStyles().title()),
+            const SizedBox(height: 60),
+            Wrap(
+              spacing: 24,
+              runSpacing: 24,
+              alignment: WrapAlignment.center,
+              children: [
+                _SyntaxCard(
+                  title: 'Top-Level Main',
+                  desc:
+                      'Execution starts at void main(). No boilerplate class wrappers required.',
+                  icon: Icons.play_circle_outline,
+                  delay: 200,
+                ),
+                _SyntaxCard(
+                  title: 'Required Semicolons',
+                  desc:
+                      'Unlike JS or Kotlin, semicolons are mandatory to terminate statements.',
+                  icon: Icons.code,
+                  delay: 400,
+                ),
+                _SyntaxCard(
+                  title: 'Unified Objects',
+                  desc:
+                      'Everything is an object. Even types like int and bool are classes under the hood.',
+                  icon: Icons.auto_awesome_motion,
+                  delay: 600,
+                ),
+                _SyntaxCard(
+                  title: 'Library Privacy',
+                  desc:
+                      'Privacy is file-level. Use an underscore (_) prefix to mark members as private.',
+                  icon: Icons.lock_outline,
+                  delay: 800,
+                ),
+              ],
             ),
-            const SizedBox(height: 28),
-            AnimatedFadeUp(
-              delay: 300,
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── FRAME 2: BOILERPLATE BATTLE (Centered Comparison) ────────────────────────
+
+class _BoilerplateBattle extends StatefulWidget {
+  const _BoilerplateBattle();
+
+  @override
+  State<_BoilerplateBattle> createState() => _BoilerplateBattleState();
+}
+
+class _BoilerplateBattleState extends State<_BoilerplateBattle> {
+  bool _showJava = true;
+
+  final String _javaCode = '''
+public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}''';
+
+  final String _dartCode = '''
+void main() {
+  print('Hello, World!');
+}''';
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrapper(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Syntactic Efficiency', style: TextStyles().title()),
+            const SizedBox(height: 40),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _ToggleOption(
+                  label: 'JAVA',
+                  isActive: _showJava,
+                  onTap: () => setState(() => _showJava = true),
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: Icon(Icons.bolt, color: AppColors.dartCyan),
+                ),
+                _ToggleOption(
+                  label: 'DART',
+                  isActive: !_showJava,
+                  onTap: () => setState(() => _showJava = false),
+                ),
+              ],
+            ),
+            const SizedBox(height: 50),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 820),
-                child: CodeDisplay(code: code),
+                key: ValueKey(_showJava),
+                constraints: const BoxConstraints(maxWidth: 800),
+                child: CodeDisplay(code: _showJava ? _javaCode : _dartCode),
               ),
             ),
           ],
@@ -190,15 +155,432 @@ class _CodeFrame extends StatelessWidget {
   }
 }
 
-Widget _Bullet(String text) {
-  return Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Text(
-        '→  ',
-        style: TextStyle(color: AppColors.dartCyan, fontSize: 21),
+// ── FRAME 3: INTERPOLATION (Revamped Comparison) ────────────────────────────
+
+class _InterpolationTheory extends StatelessWidget {
+  const _InterpolationTheory();
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrapper(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('String Interpolation', style: TextStyles().title()),
+            const SizedBox(height: 60),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 900),
+              child: Container(
+                padding: const EdgeInsets.all(40),
+                decoration: BoxDecoration(
+                  color: Colors.white.withAlpha(5),
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: Colors.white10),
+                ),
+                child: Column(
+                  children: [
+                    _ComparisonRow(
+                      lang: 'Java',
+                      code: '"Hello, " + name + "!"',
+                      note: 'Manual Concatenation',
+                    ),
+                    const Divider(color: Colors.white10, height: 50),
+                    _ComparisonRow(
+                      lang: 'Python',
+                      code: 'f"Hello, {name}!"',
+                      note: 'Prefix Required',
+                    ),
+                    const Divider(color: Colors.white10, height: 50),
+                    _ComparisonRow(
+                      lang: 'Dart',
+                      code: "'Hello, \$name!'",
+                      note: 'Native & Clean',
+                      isDart: true,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
-      Expanded(child: Text(text, style: TextStyles().normal())),
-    ],
+    );
+  }
+}
+
+// ── FRAME 4: INTERPOLATION PLAYGROUND ────────────────────────────────────────
+
+class _InterpolationPlayground extends StatefulWidget {
+  const _InterpolationPlayground();
+
+  @override
+  State<_InterpolationPlayground> createState() =>
+      _InterpolationPlaygroundState();
+}
+
+class _InterpolationPlaygroundState extends State<_InterpolationPlayground> {
+  double _price = 49.99;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrapper(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Expression Logic', style: TextStyles().title()),
+            const SizedBox(height: 60),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    const Text(
+                      'ADJUST VALUE',
+                      style: TextStyle(
+                        color: AppColors.textMuted,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                    Slider(
+                      value: _price,
+                      min: 10,
+                      max: 200,
+                      activeColor: AppColors.dartCyan,
+                      onChanged: (v) => setState(() => _price = v),
+                    ),
+                    Text(
+                      '\$${_price.toStringAsFixed(2)}',
+                      style: const TextStyle(fontSize: 28, color: Colors.white),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 80),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'INTERPOLATED CODE',
+                      style: TextStyle(
+                        color: AppColors.textMuted,
+                        fontSize: 12,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Text(
+                        "'\${price > 100 ? \"Expensive\" : \"Deal!\"}'",
+                        style: TextStyle(
+                          fontFamily: 'monospace',
+                          color: Colors.greenAccent,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      'Result: ${_price > 100 ? "Expensive" : "Deal!"}',
+                      style: const TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.dartCyan,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── FRAME 5: ARROW SYNTAX (NEW) ──────────────────────────────────────────────
+
+class _ArrowSyntax extends StatelessWidget {
+  const _ArrowSyntax();
+
+  @override
+  Widget build(BuildContext context) {
+    const code = '''
+// Standard Block Body
+int add(int a, int b) {
+  return a + b;
+}
+
+// Arrow Syntax (Expression Body)
+int add(int a, int b) => a + b;''';
+
+    return Wrapper(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Arrow Syntax', style: TextStyles().title()),
+            const SizedBox(height: 30),
+            const Text(
+              'Short-hand for single-expression functions.',
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 20),
+            ),
+            const SizedBox(height: 50),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 800),
+              child: CodeDisplay(code: code),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── FRAME 6: OPERATOR SUGAR (NEW) ────────────────────────────────────────────
+
+class _OperatorSugar extends StatelessWidget {
+  const _OperatorSugar();
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrapper(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Modern Operators', style: TextStyles().title()),
+            const SizedBox(height: 60),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _SugarBox(
+                  op: '??',
+                  label: 'If-Null',
+                  desc: 'Returns right if left is null.',
+                ),
+                const SizedBox(width: 24),
+                _SugarBox(
+                  op: '~/',
+                  label: 'Int Division',
+                  desc: 'Truncating division result.',
+                ),
+                const SizedBox(width: 24),
+                _SugarBox(
+                  op: '..',
+                  label: 'Cascade',
+                  desc: 'Chain operations on one object.',
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── FRAME 7: COMMENTS & METADATA (NEW) ───────────────────────────────────────
+
+class _CommentsMetadata extends StatelessWidget {
+  const _CommentsMetadata();
+
+  @override
+  Widget build(BuildContext context) {
+    const code = '''
+/// This is a documentation comment.
+/// It supports [Markdown] and is used by dartdoc.
+@deprecated
+void oldMethod() {
+  // Standard comment
+  /* Multi-line comment */
+}''';
+
+    return Wrapper(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Documentation & Metadata', style: TextStyles().title()),
+            const SizedBox(height: 50),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 800),
+              child: CodeDisplay(code: code),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── REUSABLE UI COMPONENTS ───────────────────────────────────────────────────
+
+Widget _SyntaxCard({
+  required String title,
+  required String desc,
+  required IconData icon,
+  required int delay,
+}) {
+  return AnimatedFadeUp(
+    delay: delay,
+    child: Container(
+      width: 280,
+      padding: const EdgeInsets.all(28),
+      decoration: BoxDecoration(
+        color: Colors.white.withAlpha(8),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white10),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: AppColors.dartCyan, size: 36),
+          const SizedBox(height: 20),
+          Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 20,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            desc,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 15,
+              height: 1.4,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget _ToggleOption({
+  required String label,
+  required bool isActive,
+  required VoidCallback onTap,
+}) {
+  return InkWell(
+    onTap: onTap,
+    child: AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+      decoration: BoxDecoration(
+        color: isActive ? AppColors.dartBlue : Colors.white.withAlpha(5),
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(
+          color: isActive ? AppColors.dartCyan : Colors.white10,
+        ),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: isActive ? Colors.white : Colors.white54,
+          fontWeight: FontWeight.w900,
+          letterSpacing: 1.2,
+        ),
+      ),
+    ),
+  );
+}
+
+class _ComparisonRow extends StatelessWidget {
+  final String lang, code, note;
+  final bool isDart;
+  const _ComparisonRow({
+    required this.lang,
+    required this.code,
+    required this.note,
+    this.isDart = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(
+          width: 100,
+          child: Text(
+            lang,
+            style: TextStyle(
+              color: isDart ? AppColors.dartCyan : Colors.white54,
+              fontWeight: isDart ? FontWeight.bold : FontWeight.normal,
+              fontSize: 18,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            code,
+            style: TextStyle(
+              color: isDart ? Colors.white : Colors.white38,
+              fontFamily: 'monospace',
+              fontSize: 20,
+            ),
+          ),
+        ),
+        Text(
+          note,
+          style: const TextStyle(
+            color: Colors.white24,
+            fontStyle: FontStyle.italic,
+            fontSize: 14,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+Widget _SugarBox({
+  required String op,
+  required String label,
+  required String desc,
+}) {
+  return Container(
+    width: 220,
+    padding: const EdgeInsets.all(24),
+    decoration: BoxDecoration(
+      color: Colors.white.withAlpha(5),
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: Colors.white10),
+    ),
+    child: Column(
+      children: [
+        Text(
+          op,
+          style: const TextStyle(
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            color: AppColors.dartCyan,
+            fontFamily: 'monospace',
+          ),
+        ),
+        const SizedBox(height: 12),
+        Text(
+          label,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          desc,
+          textAlign: TextAlign.center,
+          style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+        ),
+      ],
+    ),
   );
 }

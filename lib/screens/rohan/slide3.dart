@@ -19,251 +19,171 @@ class _RohanSlide3State extends State<RohanSlide3> {
       title: 'Names, Scopes & Bindings',
       subtitle: 'How Dart binds values to names.',
       childrenSlides: [
-        _Frame1(),
-        _Frame2(),
-        _Frame3(),
-        _Frame4(),
-        _Frame5(),
-        _Frame6(),
+        const _DeclKeywords(),
+        const _FinalVsConstBattle(),
+        const _LexicalScopeVisual(),
+        const _ClosureMachine(),
+        const _LateBindings(),
+        const _NullSafetyPromotion(),
+        const _NullOperatorPlayground(),
       ],
     );
   }
 }
 
-Widget _Frame1() {
-  return Wrapper(
-    child: Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('Three Ways to Declare', style: TextStyles().title()),
-          const SizedBox(height: 50),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AnimatedFadeUp(
-                delay: 300,
-                child: _DeclCard(
-                  keyword: 'var',
-                  color: AppColors.dartBlue,
-                  description:
-                      'Type inferred at\ncompile time.\nCan be reassigned.',
-                ),
-              ),
-              AnimatedFadeUp(
-                delay: 550,
-                child: _DeclCard(
-                  keyword: 'final',
-                  color: Colors.orange,
-                  description: 'Set once at\nruntime.\nCannot be reassigned.',
-                ),
-              ),
-              AnimatedFadeUp(
-                delay: 800,
-                child: _DeclCard(
-                  keyword: 'const',
-                  color: Colors.greenAccent.shade400,
-                  description: 'Compile-time\nconstant.\nDeep immutability.',
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    ),
-  );
-}
+// ── FRAME 1: DECLARATION KEYWORDS ────────────────────────────────────────────
 
-Widget _Frame2() {
-  const code = '''
-void main() {
-  var score = 95;        // inferred as int, can change
-  score = 100;           // OK
-
-  final name = 'Rohan';  // set once, cannot reassign
-  // name = 'Someone';   // ERROR
-
-  const pi = 3.14159;    // compile-time constant
-  // pi = 3.0;           // ERROR
-
-  // final vs const: final is evaluated at runtime
-  final now = DateTime.now(); // OK
-  // const now = DateTime.now(); // ERROR — not compile-time
-}''';
-
-  return _CodeFrame(title: 'var / final / const', code: code);
-}
-
-Widget _Frame3() {
-  return Wrapper(
-    child: Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('Lexical Scoping & Closures', style: TextStyles().title()),
-          const SizedBox(height: 60),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 800),
-            child: Column(
-              spacing: 24,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AnimatedFadeUp(
-                  delay: 300,
-                  child: _Bullet(
-                    "Dart uses lexical scoping — a variable's scope is determined by where it's written in the code",
-                  ),
-                ),
-                AnimatedFadeUp(
-                  delay: 550,
-                  child: _Bullet(
-                    'Inner functions can access variables from their enclosing scope',
-                  ),
-                ),
-                AnimatedFadeUp(
-                  delay: 800,
-                  child: _Bullet(
-                    'A closure is a function that captures and remembers its surrounding variables, even after the outer function returns',
-                  ),
-                ),
-                AnimatedFadeUp(
-                  delay: 1050,
-                  child: _Bullet(
-                    'Similar to Python — unlike Java where captured locals must be effectively final and are less flexible',
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-Widget _Frame4() {
-  const code = '''
-Function makeCounter() {
-  int count = 0; // captured by the closure below
-
-  return () {
-    count++;     // still has access to count
-    print(count);
-  };
-}
-
-void main() {
-  var counter = makeCounter();
-  counter(); // 1
-  counter(); // 2
-  counter(); // 3 — count persists across calls
-}''';
-
-  return _CodeFrame(title: 'Closures', code: code);
-}
-
-Widget _Frame5() {
-  return Wrapper(
-    child: Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('Null Safety', style: TextStyles().title()),
-          const SizedBox(height: 60),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 800),
-            child: Column(
-              spacing: 24,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AnimatedFadeUp(
-                  delay: 300,
-                  child: _Bullet(
-                    'By default, variables cannot be null — String name cannot hold null',
-                  ),
-                ),
-                AnimatedFadeUp(
-                  delay: 550,
-                  child: _Bullet(
-                    r'Add ? to opt into nullable: String? name can be null',
-                  ),
-                ),
-                AnimatedFadeUp(
-                  delay: 800,
-                  child: _Bullet(
-                    'Use ?? as a null fallback — name ?? "Guest" returns "Guest" if name is null',
-                  ),
-                ),
-                AnimatedFadeUp(
-                  delay: 1050,
-                  child: _Bullet(
-                    "Use ?. for safe calls — won't crash even if the object is null",
-                  ),
-                ),
-                AnimatedFadeUp(
-                  delay: 1300,
-                  child: _Bullet(
-                    'Unlike Java — NullPointerException becomes a compile error, not a runtime crash',
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-Widget _Frame6() {
-  const code = '''
-void main() {
-  String name = 'Rohan';
-  // name = null; // ERROR — not nullable
-
-  String? nickname = null; // explicitly nullable
-
-  // ?? — null fallback
-  print(nickname ?? 'Guest');          // Guest
-
-  // ?. — safe call, won't crash if null
-  print(nickname?.toUpperCase());      // null (no crash)
-
-  // ! — force unwrap (throws if null, use carefully)
-  nickname = 'RK';
-  print(nickname!.toUpperCase());      // RK
-}''';
-
-  return _CodeFrame(title: 'Null Safety', code: code);
-}
-
-class _CodeFrame extends StatelessWidget {
-  final String title;
-  final String code;
-  const _CodeFrame({required this.title, required this.code});
+class _DeclKeywords extends StatelessWidget {
+  const _DeclKeywords();
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 60),
+    return Wrapper(
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AnimatedFadeUp(
-              delay: 100,
-              child: Text(title, style: TextStyles().heading1()),
+            Text('Declaration Styles', style: TextStyles().title()),
+            const SizedBox(height: 60),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _KeywordCard(
+                  keyword: 'var',
+                  color: AppColors.dartBlue,
+                  label: 'INFERRED',
+                  desc: 'Type determined at first assignment. Reassignable.',
+                ),
+                const SizedBox(width: 24),
+                _KeywordCard(
+                  keyword: 'final',
+                  color: Colors.orangeAccent,
+                  label: 'RUNTIME',
+                  desc: 'Immutable once set. Initialized when accessed.',
+                ),
+                const SizedBox(width: 24),
+                _KeywordCard(
+                  keyword: 'const',
+                  color: Colors.greenAccent,
+                  label: 'COMPILE-TIME',
+                  desc: 'Deeply immutable. Hard-coded into the binary.',
+                ),
+              ],
             ),
-            const SizedBox(height: 28),
-            AnimatedFadeUp(
-              delay: 300,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 820),
-                child: CodeDisplay(code: code),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── FRAME 2: FINAL VS CONST (The Logic Battle) ──────────────────────────────
+
+class _FinalVsConstBattle extends StatelessWidget {
+  const _FinalVsConstBattle();
+
+  @override
+  Widget build(BuildContext context) {
+    const code = '''
+void main() {
+  // FINAL: Can be set via a runtime calculation
+  final now = DateTime.now(); 
+  
+  // CONST: Must be known at compile time
+  const pi = 3.14159;
+  
+  // const time = DateTime.now(); // ERROR!
+}''';
+
+    return Wrapper(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Runtime vs. Compile-time', style: TextStyles().title()),
+            const SizedBox(height: 50),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _ConstraintBox(
+                  title: 'FINAL',
+                  points: [
+                    'Evaluated at runtime',
+                    'Instance-level',
+                    'Set once per object',
+                  ],
+                ),
+                const SizedBox(width: 40),
+                const Icon(Icons.bolt, color: Colors.orangeAccent, size: 40),
+                const SizedBox(width: 40),
+                _ConstraintBox(
+                  title: 'CONST',
+                  points: [
+                    'Evaluated at compile-time',
+                    'Canonicalized (Memory efficient)',
+                    'Deeply immutable collections',
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 50),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 700),
+              child: CodeDisplay(code: code),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── FRAME 3: LEXICAL SCOPE (Visualizing the Nest) ───────────────────────────
+
+class _LexicalScopeVisual extends StatelessWidget {
+  const _LexicalScopeVisual();
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrapper(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Lexical Scoping', style: TextStyles().title()),
+            const SizedBox(height: 60),
+            Container(
+              width: 800,
+              padding: const EdgeInsets.all(40),
+              decoration: BoxDecoration(
+                border: Border.all(color: AppColors.dartBlue, width: 2),
+                borderRadius: BorderRadius.circular(20),
+                color: AppColors.dartBlue.withAlpha(10),
+              ),
+              child: Column(
+                children: [
+                  _ScopeLabel('TOP-LEVEL SCOPE (void main)'),
+                  const SizedBox(height: 20),
+                  Container(
+                    padding: const EdgeInsets.all(30),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppColors.dartCyan, width: 2),
+                      borderRadius: BorderRadius.circular(12),
+                      color: AppColors.dartCyan.withAlpha(20),
+                    ),
+                    child: Column(
+                      children: [
+                        _ScopeLabel('LOCAL SCOPE (if / for / func)'),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'Inner scopes can see "outward," but outer scopes cannot see "inward."',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white70, fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -273,51 +193,542 @@ class _CodeFrame extends StatelessWidget {
   }
 }
 
-Widget _Bullet(String text) {
-  return Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Text(
-        '→  ',
-        style: TextStyle(color: AppColors.dartCyan, fontSize: 21),
-      ),
-      Expanded(child: Text(text, style: TextStyles().normal())),
-    ],
-  );
+// ── FRAME 4: THE CLOSURE MACHINE (Interactive State) ─────────────────────────
+
+class _ClosureMachine extends StatefulWidget {
+  const _ClosureMachine();
+
+  @override
+  State<_ClosureMachine> createState() => _ClosureMachineState();
 }
 
-Widget _DeclCard({
+class _ClosureMachineState extends State<_ClosureMachine> {
+  int _internalValue = 0;
+  final List<String> _logs = [];
+
+  void _runClosure() {
+    setState(() {
+      _internalValue++;
+      _logs.insert(0, 'Closure called! count is now: $_internalValue');
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const code = '''
+Function makeCounter() {
+  int count = 0; // The captured variable
+  return () => count++; 
+}''';
+
+    return Wrapper(
+      child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Closures', style: TextStyles().title()),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'Functions that "capture" their environment.',
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 18,
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  CodeDisplay(code: code),
+                ],
+              ),
+            ),
+            const SizedBox(width: 80),
+            Container(
+              width: 350,
+              height: 450,
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.white10),
+              ),
+              child: Column(
+                children: [
+                  const Text(
+                    'ENVIRONMENT STATE',
+                    style: TextStyle(color: AppColors.textMuted, fontSize: 12),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'count: $_internalValue',
+                    style: const TextStyle(
+                      fontSize: 48,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.greenAccent,
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  ElevatedButton(
+                    onPressed: _runClosure,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.dartBlue,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: const Text('TRIGGER CLOSURE'),
+                  ),
+                  const SizedBox(height: 30),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: _logs.length,
+                      itemBuilder: (context, i) => Text(
+                        _logs[i],
+                        style: const TextStyle(
+                          color: Colors.white24,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── FRAME 5: LATE BINDINGS (Lazy Initialization) ────────────────────────────
+
+class _LateBindings extends StatelessWidget {
+  const _LateBindings();
+
+  @override
+  Widget build(BuildContext context) {
+    const code = '''
+class ApiService {
+  // Promised to be initialized before use
+  late String _apiKey;
+
+  void init() {
+    _apiKey = 'secret_123';
+  }
+}''';
+
+    return Wrapper(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Late Bindings', style: TextStyles().title()),
+            const SizedBox(height: 40),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _LateIconBox(
+                  Icons.timer_outlined,
+                  'Lazy Loading',
+                  'Only initialized when first accessed.',
+                ),
+                const SizedBox(width: 24),
+                _LateIconBox(
+                  Icons.verified_user_outlined,
+                  'Non-Nullable',
+                  'Allows non-null variables without an immediate value.',
+                ),
+              ],
+            ),
+            const SizedBox(height: 60),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 800),
+              child: CodeDisplay(code: code),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── FRAME 6: FLOW ANALYSIS & PROMOTION (Interactive) ─────────────────────────
+
+class _NullSafetyPromotion extends StatefulWidget {
+  const _NullSafetyPromotion();
+
+  @override
+  State<_NullSafetyPromotion> createState() => _NullSafetyPromotionState();
+}
+
+class _NullSafetyPromotionState extends State<_NullSafetyPromotion> {
+  bool _isPromoted = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrapper(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Flow Analysis', style: TextStyles().title()),
+            const SizedBox(height: 40),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    const Text(
+                      'SOURCE CODE',
+                      style: TextStyle(
+                        color: AppColors.textMuted,
+                        fontSize: 12,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _PromotionCodeView(isPromoted: _isPromoted),
+                  ],
+                ),
+                const SizedBox(width: 60),
+                Column(
+                  children: [
+                    const Text(
+                      'TYPE STATUS',
+                      style: TextStyle(
+                        color: AppColors.textMuted,
+                        fontSize: 12,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    _TypeChip(label: 'String?', isActive: !_isPromoted),
+                    const Icon(Icons.arrow_downward, color: Colors.white24),
+                    _TypeChip(
+                      label: 'String',
+                      isActive: _isPromoted,
+                      color: Colors.greenAccent,
+                    ),
+                    const SizedBox(height: 40),
+                    Switch(
+                      value: _isPromoted,
+                      onChanged: (v) => setState(() => _isPromoted = v),
+                      activeColor: Colors.greenAccent,
+                    ),
+                    const Text(
+                      'SIMULATE NULL-CHECK',
+                      style: TextStyle(color: Colors.white54, fontSize: 12),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── FRAME 7: NULL OPERATOR PLAYGROUND ────────────────────────────────────────
+
+class _NullOperatorPlayground extends StatefulWidget {
+  const _NullOperatorPlayground();
+
+  @override
+  State<_NullOperatorPlayground> createState() =>
+      _NullOperatorPlaygroundState();
+}
+
+class _NullOperatorPlaygroundState extends State<_NullOperatorPlayground> {
+  String? _input;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrapper(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Null Operators', style: TextStyles().title()),
+            const SizedBox(height: 60),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _OperatorTrial(
+                  op: '??',
+                  input: _input,
+                  fallback: '"Guest"',
+                  result: _input ?? "Guest",
+                ),
+                const SizedBox(width: 24),
+                _OperatorTrial(
+                  op: '?.',
+                  input: _input,
+                  fallback: 'toUpperCase()',
+                  result: _input?.toUpperCase() ?? "null",
+                ),
+              ],
+            ),
+            const SizedBox(height: 50),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () => setState(() => _input = null),
+                  child: const Text('Set Input to NULL'),
+                ),
+                const SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: () => setState(() => _input = "Rohan"),
+                  child: const Text('Set Input to "Rohan"'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── REUSABLE UI FRAGMENTS ───────────────────────────────────────────────────
+
+Widget _KeywordCard({
   required String keyword,
   required Color color,
-  required String description,
+  required String label,
+  required String desc,
 }) {
   return Container(
-    width: 220,
-    padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
+    width: 260,
+    padding: const EdgeInsets.all(28),
     decoration: BoxDecoration(
-      border: Border.all(color: color.withAlpha(80), width: 1.5),
-      borderRadius: BorderRadius.circular(16),
-      color: color.withAlpha(18),
+      color: color.withAlpha(10),
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(color: color.withAlpha(100)),
     ),
     child: Column(
       children: [
         Text(
+          label,
+          style: TextStyle(
+            color: color,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.5,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Text(
           keyword,
           style: TextStyle(
-            fontSize: 30,
+            fontSize: 32,
             fontWeight: FontWeight.bold,
             color: color,
             fontFamily: 'monospace',
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 20),
         Text(
-          description,
+          desc,
           textAlign: TextAlign.center,
           style: const TextStyle(
-            fontSize: 17,
             color: AppColors.textSecondary,
-            height: 1.5,
+            fontSize: 15,
+            height: 1.4,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _ConstraintBox({required String title, required List<String> points}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        title,
+        style: const TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.w900,
+          color: Colors.white,
+          letterSpacing: 2,
+        ),
+      ),
+      const SizedBox(height: 20),
+      ...points.map(
+        (p) => Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Row(
+            children: [
+              const Icon(Icons.circle, size: 6, color: AppColors.dartCyan),
+              const SizedBox(width: 12),
+              Text(p, style: const TextStyle(color: AppColors.textSecondary)),
+            ],
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
+Widget _ScopeLabel(String text) {
+  return Text(
+    text,
+    style: const TextStyle(
+      fontSize: 12,
+      fontWeight: FontWeight.bold,
+      letterSpacing: 2,
+      color: Colors.white54,
+    ),
+  );
+}
+
+Widget _LateIconBox(IconData icon, String title, String desc) {
+  return Container(
+    width: 300,
+    padding: const EdgeInsets.all(24),
+    decoration: BoxDecoration(
+      color: Colors.white.withAlpha(5),
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: Colors.white10),
+    ),
+    child: Column(
+      children: [
+        Icon(icon, color: AppColors.dartCyan, size: 32),
+        const SizedBox(height: 16),
+        Text(
+          title,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          desc,
+          textAlign: TextAlign.center,
+          style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+        ),
+      ],
+    ),
+  );
+}
+
+class _PromotionCodeView extends StatelessWidget {
+  final bool isPromoted;
+  const _PromotionCodeView({required this.isPromoted});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 500,
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'String? name = getMaybeName();',
+            style: TextStyle(color: Colors.white38, fontFamily: 'monospace'),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'if (name != null) {',
+            style: TextStyle(
+              color: isPromoted ? Colors.greenAccent : Colors.white,
+              fontWeight: isPromoted ? FontWeight.bold : FontWeight.normal,
+              fontFamily: 'monospace',
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20, top: 4),
+            child: Text(
+              'print(name.length); // PROMOTED!',
+              style: TextStyle(
+                color: isPromoted ? Colors.greenAccent : Colors.white24,
+                fontFamily: 'monospace',
+              ),
+            ),
+          ),
+          const Text(
+            '}',
+            style: TextStyle(color: Colors.white, fontFamily: 'monospace'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+Widget _TypeChip({
+  required String label,
+  required bool isActive,
+  Color color = AppColors.dartCyan,
+}) {
+  return AnimatedOpacity(
+    duration: const Duration(milliseconds: 300),
+    opacity: isActive ? 1.0 : 0.2,
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      decoration: BoxDecoration(
+        color: color.withAlpha(30),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(color: color, fontWeight: FontWeight.bold),
+      ),
+    ),
+  );
+}
+
+Widget _OperatorTrial({
+  required String op,
+  required String? input,
+  required String fallback,
+  required dynamic result,
+}) {
+  return Container(
+    width: 280,
+    padding: const EdgeInsets.all(24),
+    decoration: BoxDecoration(
+      color: Colors.white.withAlpha(5),
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: Colors.white10),
+    ),
+    child: Column(
+      children: [
+        Text(
+          op,
+          style: const TextStyle(
+            fontSize: 40,
+            fontWeight: FontWeight.bold,
+            color: AppColors.dartCyan,
+            fontFamily: 'monospace',
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          '${input ?? "null"} $op $fallback',
+          style: const TextStyle(
+            color: Colors.white54,
+            fontSize: 14,
+            fontFamily: 'monospace',
+          ),
+        ),
+        const Divider(height: 32, color: Colors.white10),
+        Text(
+          'RESULT: $result',
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
           ),
         ),
       ],
