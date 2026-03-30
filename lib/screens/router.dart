@@ -1,5 +1,10 @@
-import 'package:dart_presentation/screens/rohan/slide1.dart';
-import 'package:dart_presentation/screens/rohan/slide2.dart';
+import 'package:dart_presentation/screens/supreme/supreme_slide1.dart';
+import 'package:dart_presentation/screens/supreme/supreme_slide2.dart';
+import 'package:dart_presentation/screens/supreme/supreme_slide3.dart';
+import 'package:dart_presentation/screens/supreme/supreme_slide4.dart';
+import 'package:dart_presentation/screens/supreme/supreme_slide5.dart';
+import 'package:dart_presentation/screens/supreme/supreme_slide6.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -15,7 +20,14 @@ class _SlideRouterState extends State<SlideRouter> {
   int _index = 0;
 
   // just add your slides here
-  final List<Widget> _slides = [Slide1(), Slide2()];
+  final List<Widget> _slides = [
+    SupremeSlide1(),
+    SupremeSlide2(),
+    SupremeSlide3(),
+    SupremeSlide4(),
+    SupremeSlide5(),
+    SupremeSlide6(),
+  ];
 
   @override
   void dispose() {

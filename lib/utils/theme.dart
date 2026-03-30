@@ -11,6 +11,14 @@ class TextStyles {
   TextStyle subtitle() {
     return TextStyle(color: color.withAlpha(150), fontSize: 30);
   }
+
+  TextStyle heading1() {
+    return TextStyle(color: color, fontSize: 32, fontWeight: FontWeight.bold);
+  }
+
+  TextStyle normal() {
+    return const TextStyle(color: Colors.black54, fontSize: 23);
+  }
 }
 
 class AppColors {
