@@ -5,20 +5,20 @@ import 'package:dart_presentation/widgets/code_display.dart';
 import 'package:dart_presentation/widgets/wrapper.dart';
 import 'package:flutter/material.dart';
 
-class RohanSlide2 extends StatefulWidget {
-  const RohanSlide2({super.key});
+class RohanSlide4 extends StatefulWidget {
+  const RohanSlide4({super.key});
 
   @override
-  State<RohanSlide2> createState() => _RohanSlide2State();
+  State<RohanSlide4> createState() => _RohanSlide4State();
 }
 
-class _RohanSlide2State extends State<RohanSlide2> {
+class _RohanSlide4State extends State<RohanSlide4> {
   @override
   Widget build(BuildContext context) {
     return DefaultSlide(
-      title: 'Syntax',
-      subtitle: 'Familiar, but with upgrades.',
-      childrenSlides: [_Frame1(), _Frame2(), _Frame3(), _Frame4()],
+      title: 'Semantic Analysis',
+      subtitle: 'Catching bugs before you run a single line.',
+      childrenSlides: [_Frame1(), _Frame2(), _Frame3()],
     );
   }
 }
@@ -30,7 +30,7 @@ Widget _Frame1() {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Program Structure', style: TextStyles().title()),
+          Text('Type Inference', style: TextStyles().title()),
           const SizedBox(height: 60),
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 800),
@@ -41,25 +41,25 @@ Widget _Frame1() {
                 AnimatedFadeUp(
                   delay: 300,
                   child: _Bullet(
-                    'C-style syntax — curly braces, semicolons, familiar to Java devs',
+                    'Dart is statically typed — types are resolved at compile time, not runtime',
                   ),
                 ),
                 AnimatedFadeUp(
                   delay: 550,
                   child: _Bullet(
-                    'Every program starts at top-level void main() — no class required',
+                    'var x = 42 — the analyzer infers x is int immediately, no annotation needed',
                   ),
                 ),
                 AnimatedFadeUp(
                   delay: 800,
                   child: _Bullet(
-                    'Everything is an object — even int and bool are classes under the hood',
+                    'Once inferred, the type is locked — reassigning x = "hello" is a compile error',
                   ),
                 ),
                 AnimatedFadeUp(
                   delay: 1050,
                   child: _Bullet(
-                    'No access modifier keywords — prefix with _ to mark something private',
+                    'Unlike Python — x = 42 then x = "hello" is valid but only breaks at runtime',
                   ),
                 ),
               ],
@@ -72,31 +72,13 @@ Widget _Frame1() {
 }
 
 Widget _Frame2() {
-  const code = '''
-void main() {
-  // Everything starts here — no class needed
-  print('Hello, Dart!');
-
-  int age = 21;
-  double gpa = 3.8;
-  bool isGraduating = true;
-
-  print(age);          // 21
-  print(gpa);          // 3.8
-  print(isGraduating); // true
-}''';
-
-  return _CodeFrame(title: 'Hello World', code: code);
-}
-
-Widget _Frame3() {
   return Wrapper(
     child: Center(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('String Interpolation', style: TextStyles().title()),
+          Text('Sound Null Safety', style: TextStyles().title()),
           const SizedBox(height: 60),
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 800),
@@ -107,25 +89,25 @@ Widget _Frame3() {
                 AnimatedFadeUp(
                   delay: 300,
                   child: _Bullet(
-                    r'Use $variable directly inside a string — no concatenation needed',
+                    '"Sound" means the compiler fully guarantees null safety — no loopholes',
                   ),
                 ),
                 AnimatedFadeUp(
                   delay: 550,
                   child: _Bullet(
-                    r'Use ${expression} for any full expression inside a string',
+                    'The analyzer builds a flow graph and tracks nullability through every branch',
                   ),
                 ),
                 AnimatedFadeUp(
                   delay: 800,
                   child: _Bullet(
-                    'In Java: "Hello, " + name + "!"  —  Dart makes this much cleaner',
+                    'After if (x != null), Dart automatically promotes x to non-nullable inside that block',
                   ),
                 ),
                 AnimatedFadeUp(
                   delay: 1050,
                   child: _Bullet(
-                    'Similar to Python f-strings, but no f prefix needed at all',
+                    'Java has @Nullable annotations as hints — Dart enforces this at the compiler level',
                   ),
                 ),
               ],
@@ -137,25 +119,28 @@ Widget _Frame3() {
   );
 }
 
-Widget _Frame4() {
-  const code = r'''
+Widget _Frame3() {
+  const code = '''
 void main() {
-  String name = 'Rohan';
-  int year = 2025;
+  // Type inference — x is int, locked at compile time
+  var x = 42;
+  // x = 'hello'; // COMPILE ERROR: String can't be assigned to int
 
-  // $variable — simple interpolation
-  print('Hello, $name!');            // Hello, Rohan!
+  // Null safety — analyzer tracks flow through branches
+  String? maybeNull = null;
 
-  // ${expression} — any expression works
-  print('Graduating in ${year + 1}'); // Graduating in 2026
+  // print(maybeNull.length); // COMPILE ERROR: nullable access
 
-  // Compare:
-  // Java:   "Hello, " + name + "!"
-  // Python: f"Hello, {name}!"
-  // Dart:   'Hello, $name!'        ← cleanest
+  if (maybeNull != null) {
+    // Dart promotes maybeNull to String here automatically
+    print(maybeNull.length); // SAFE — no ? needed
+  }
+
+  // Java: NullPointerException at runtime (no warning)
+  // Dart: caught before you even run the program
 }''';
 
-  return _CodeFrame(title: 'String Interpolation', code: code);
+  return _CodeFrame(title: 'Catching Bugs at Compile Time', code: code);
 }
 
 class _CodeFrame extends StatelessWidget {
@@ -179,7 +164,7 @@ class _CodeFrame extends StatelessWidget {
             AnimatedFadeUp(
               delay: 300,
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 820),
+                constraints: const BoxConstraints(maxWidth: 900),
                 child: CodeDisplay(code: code),
               ),
             ),

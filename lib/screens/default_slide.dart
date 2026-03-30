@@ -29,7 +29,6 @@ class _DefaultSlideState extends State<DefaultSlide> {
   void initState() {
     super.initState();
     _focusNode = FocusNode();
-
     widget.childrenSlides.insert(0, const SizedBox.shrink());
     widget.childrenSlides.add(const SizedBox.shrink());
   }
@@ -42,9 +41,7 @@ class _DefaultSlideState extends State<DefaultSlide> {
 
   void _next() {
     if (_currentIndex < widget.childrenSlides.length - 1) {
-      setState(() {
-        _currentIndex++;
-      });
+      setState(() => _currentIndex++);
     }
   }
 
@@ -63,48 +60,94 @@ class _DefaultSlideState extends State<DefaultSlide> {
       focusNode: _focusNode..requestFocus(),
       onKeyEvent: (event) {
         if (event is KeyDownEvent) {
-          if (event.logicalKey == LogicalKeyboardKey.keyD) {
+          if (event.logicalKey == LogicalKeyboardKey.keyD)
             _next();
-          } else if (event.logicalKey == LogicalKeyboardKey.keyA) {
+          else if (event.logicalKey == LogicalKeyboardKey.keyA)
             _prev();
-          }
         }
       },
       child: Material(
+        color: Colors.transparent,
         child: Stack(
           children: [
+            // ── Background ──────────────────────────────────────────────
+            const _SlideBackground(),
+
+            // ── Decorative elements ──────────────────────────────────────
+            const _DecorativeGrid(),
+
+            // ── Top accent bar ───────────────────────────────────────────
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: 3,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.transparent,
+                      AppColors.dartBlue,
+                      AppColors.dartCyan,
+                      AppColors.dartBlue,
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            // ── Bottom accent bar ────────────────────────────────────────
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: 1,
+                color: AppColors.dartBlue.withAlpha(40),
+              ),
+            ),
+
+            // ── Title / subtitle block ───────────────────────────────────
             AnimatedAlign(
               duration: const Duration(milliseconds: 500),
               curve: Curves.easeInOut,
               alignment: _movedToCorner ? Alignment.topLeft : Alignment.center,
               child: Padding(
-                padding: const EdgeInsets.all(24.0),
+                padding: const EdgeInsets.all(36.0),
                 child: AnimatedScale(
-                  scale: _movedToCorner ? 0.7 : 1.0,
+                  scale: _movedToCorner ? 0.62 : 1.0,
                   duration: const Duration(milliseconds: 500),
                   child: AnimatedOpacity(
-                    opacity: _movedToCorner ? 0.85 : 1.0,
+                    opacity: _movedToCorner ? 0.75 : 1.0,
                     duration: const Duration(milliseconds: 500),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: _movedToCorner
-                          ? CrossAxisAlignment.start
-                          : CrossAxisAlignment.center,
-                      children: [
-                        Text(widget.title, style: TextStyles().title()),
-                        const SizedBox(height: 10),
-                        Text(widget.subtitle, style: TextStyles().subtitle()),
-                      ],
+                    child: _TitleBlock(
+                      title: widget.title,
+                      subtitle: widget.subtitle,
+                      centered: !_movedToCorner,
                     ),
                   ),
                 ),
               ),
             ),
 
+            // ── Slide content ────────────────────────────────────────────
             _AnimatedSlideItem(
               key: ValueKey(_currentIndex),
               child: widget.childrenSlides[_currentIndex],
             ),
+
+            // ── Frame dots indicator ─────────────────────────────────────
+            if (_movedToCorner)
+              Positioned(
+                bottom: 28,
+                left: 0,
+                right: 0,
+                child: _FrameDots(
+                  total: widget.childrenSlides.length - 2,
+                  current: _currentIndex - 1,
+                ),
+              ),
           ],
         ),
       ),
@@ -112,9 +155,194 @@ class _DefaultSlideState extends State<DefaultSlide> {
   }
 }
 
+// ── Background ───────────────────────────────────────────────────────────────
+
+class _SlideBackground extends StatelessWidget {
+  const _SlideBackground();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: RadialGradient(
+          center: Alignment(-0.3, -0.4),
+          radius: 1.4,
+          colors: [
+            Color(0xFF0D1B2A), // dark navy center
+            Color(0xFF060D14), // near-black edges
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Subtle dot grid overlay ───────────────────────────────────────────────────
+
+class _DecorativeGrid extends StatelessWidget {
+  const _DecorativeGrid();
+
+  @override
+  Widget build(BuildContext context) {
+    return Opacity(
+      opacity: 0.18,
+      child: CustomPaint(
+        painter: _DotGridPainter(),
+        child: const SizedBox.expand(),
+      ),
+    );
+  }
+}
+
+class _DotGridPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = AppColors.dartBlue
+      ..strokeWidth = 1;
+
+    const spacing = 40.0;
+    for (double x = 0; x < size.width; x += spacing) {
+      for (double y = 0; y < size.height; y += spacing) {
+        canvas.drawCircle(Offset(x, y), 1.2, paint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// ── Title block ───────────────────────────────────────────────────────────────
+
+class _TitleBlock extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final bool centered;
+
+  const _TitleBlock({
+    required this.title,
+    required this.subtitle,
+    required this.centered,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: centered
+          ? CrossAxisAlignment.center
+          : CrossAxisAlignment.start,
+      children: [
+        // Glowing blue label chip
+        if (centered)
+          Container(
+            margin: const EdgeInsets.only(bottom: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: AppColors.dartBlue.withAlpha(120),
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(20),
+              color: AppColors.dartBlue.withAlpha(25),
+            ),
+            child: const Text(
+              'DART PROGRAMMING LANGUAGE',
+              style: TextStyle(
+                color: AppColors.dartCyan,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 2.5,
+              ),
+            ),
+          ),
+
+        // Title with gradient shimmer
+        ShaderMask(
+          shaderCallback: (bounds) => const LinearGradient(
+            colors: [Colors.white, AppColors.dartCyan],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ).createShader(bounds),
+          child: Text(
+            title,
+            textAlign: centered ? TextAlign.center : TextAlign.start,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 52,
+              fontWeight: FontWeight.w800,
+              letterSpacing: -1,
+              height: 1.1,
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 12),
+
+        // Subtitle
+        Text(
+          subtitle,
+          textAlign: centered ? TextAlign.center : TextAlign.start,
+          style: TextStyle(
+            color: Colors.white.withAlpha(130),
+            fontSize: 22,
+            fontWeight: FontWeight.w300,
+            letterSpacing: 0.3,
+          ),
+        ),
+
+        // Decorative line under title when centered
+        if (centered) ...[
+          const SizedBox(height: 28),
+          Container(
+            width: 60,
+            height: 2,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [AppColors.dartBlue, AppColors.dartCyan],
+              ),
+              borderRadius: BorderRadius.all(Radius.circular(2)),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+// ── Frame dots ────────────────────────────────────────────────────────────────
+
+class _FrameDots extends StatelessWidget {
+  final int total;
+  final int current;
+  const _FrameDots({required this.total, required this.current});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(total, (i) {
+        final active = i == current;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          width: active ? 24 : 8,
+          height: 8,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4),
+            color: active ? AppColors.dartBlue : Colors.white.withAlpha(40),
+          ),
+        );
+      }),
+    );
+  }
+}
+
+// ── Slide content fade-in ─────────────────────────────────────────────────────
+
 class _AnimatedSlideItem extends StatelessWidget {
   final Widget child;
-
   const _AnimatedSlideItem({super.key, required this.child});
 
   @override

@@ -1,3 +1,8 @@
+import 'package:dart_presentation/screens/rohan/slide1.dart';
+import 'package:dart_presentation/screens/rohan/slide2.dart';
+import 'package:dart_presentation/screens/rohan/slide3.dart';
+import 'package:dart_presentation/screens/rohan/slide4.dart';
+import 'package:dart_presentation/screens/rohan/slide5.dart';
 import 'package:dart_presentation/screens/supreme/supreme_slide1.dart';
 import 'package:dart_presentation/screens/supreme/supreme_slide2.dart';
 import 'package:dart_presentation/screens/supreme/supreme_slide3.dart';
@@ -19,8 +24,13 @@ class _SlideRouterState extends State<SlideRouter> {
   final PageController _controller = PageController();
   int _index = 0;
 
-  // just add your slides here
+  // Rohan's slides first, then Supreme's
   final List<Widget> _slides = [
+    RohanSlide1(),
+    RohanSlide2(),
+    RohanSlide3(),
+    RohanSlide4(),
+    RohanSlide5(),
     SupremeSlide1(),
     SupremeSlide2(),
     SupremeSlide3(),
@@ -35,13 +45,11 @@ class _SlideRouterState extends State<SlideRouter> {
     super.dispose();
   }
 
-  // next page logic
   void _next() {
     if (_index < _slides.length - 1) {
       setState(() {
         _index += 1;
       });
-
       _controller.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -49,7 +57,6 @@ class _SlideRouterState extends State<SlideRouter> {
     }
   }
 
-  // previous page logic
   void _previous() {
     if (_index > 0) {
       setState(() {
@@ -84,14 +91,12 @@ class _SlideRouterState extends State<SlideRouter> {
               physics: const NeverScrollableScrollPhysics(),
               children: _slides,
             ),
-
-            // a slide number at the bottom?
             Positioned(
               bottom: 24,
               right: 32,
               child: Text(
                 '${_index + 1} of ${_slides.length}',
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.black26,
                   fontSize: 16,
                   fontStyle: FontStyle.italic,
