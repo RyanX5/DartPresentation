@@ -1,3 +1,4 @@
+import 'package:dart_presentation/services/remote_state.dart';
 import 'package:dart_presentation/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -35,12 +36,24 @@ class _DefaultSlideState extends State<DefaultSlide> {
       ...widget.childrenSlides,
       const SizedBox.shrink(),
     ];
+    remoteGoToNotifier.addListener(_onRemoteState);
   }
 
   @override
   void dispose() {
+    remoteGoToNotifier.removeListener(_onRemoteState);
     _focusNode.dispose();
     super.dispose();
+  }
+
+  void _onRemoteState() {
+    final state = remoteGoToNotifier.value;
+    if (state == null) return;
+    // frame + 1 because _slides[0] is the intro sentinel
+    final targetIndex = (state.frame + 1).clamp(1, widget.childrenSlides.length);
+    if (targetIndex != _currentIndex) {
+      setState(() => _currentIndex = targetIndex);
+    }
   }
 
   void _next() {
@@ -60,6 +73,7 @@ class _DefaultSlideState extends State<DefaultSlide> {
     return KeyboardListener(
       focusNode: _focusNode..requestFocus(),
       onKeyEvent: (event) {
+        if (!keyboardEnabledNotifier.value) return;
         if (event is KeyDownEvent) {
           if (event.logicalKey == LogicalKeyboardKey.keyD)
             _next();
