@@ -196,7 +196,7 @@ class _SlideRouterState extends State<SlideRouter> {
                               Icon(
                                 enabled
                                     ? Icons.keyboard
-                                    : Icons.keyboard_off_outlined,
+                                    : Icons.keyboard_hide,
                                 size: 16,
                                 color: enabled
                                     ? AppColors.dartCyan
