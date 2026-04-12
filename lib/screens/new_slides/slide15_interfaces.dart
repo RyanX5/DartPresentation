@@ -93,50 +93,23 @@ class _OverrideFrame extends StatelessWidget {
               child: CodeDisplay(
                 fontSize: 14,
                 code: '''abstract class Shape {
-  double area(); // abstract method
+  double area();
   void describe() => print('Area: \${area()}');
 }
 
 class Circle extends Shape {
   final double radius;
   Circle(this.radius);
-
-  @override
-  double area() => 3.14159 * radius * radius;
+  @override double area() => 3.14 * radius * radius;
 }
 
 class Rectangle extends Shape {
-  final double width, height;
-  Rectangle(this.width, this.height);
-
-  @override
-  double area() => width * height;
+  final double w, h;
+  Rectangle(this.w, this.h);
+  @override double area() => w * h;
 }
 
-class Triangle extends Shape {
-  final double base, height;
-  Triangle(this.base, this.height);
-
-  @override
-  double area() => 0.5 * base * height;
-}
-
-void main() {
-  // List of different shapes — polymorphic!
-  List<Shape> shapes = [
-    Circle(5),
-    Rectangle(4, 6),
-    Triangle(3, 8),
-  ];
-
-  // Same method call, different behavior
-  for (var shape in shapes) {
-    shape.describe(); // dynamic dispatch
-    if (shape is Circle) {
-      print('Radius: \${shape.radius}'); // promoted!
-    }
-  }
-}''',
+[Circle(5), Rectangle(4, 6)].forEach((s) => s.describe());''',
               ),
             ),
           ),
@@ -200,55 +173,21 @@ class _ImplicitInterfaceFrame extends StatelessWidget {
               delay: 200,
               child: CodeDisplay(
                 fontSize: 13,
-                code: '''// In Dart, there is no "interface" keyword.
-// Every class implicitly defines an interface.
-
+                code: '''// Every class IS an interface in Dart
 class Logger {
-  // These become the "interface contract"
-  void log(String message) =>
-      print('[LOG] \$message');
-
-  void error(String message) =>
-      print('[ERROR] \$message');
+  void log(String msg) => print('[LOG] \$msg');
+  void error(String msg) => print('[ERR] \$msg');
 }
 
-// "implements" uses the interface, not the implementation
-// You MUST provide all methods — no inheritance here
+// implements = contract only, no impl inherited
 class ConsoleLogger implements Logger {
-  @override
-  void log(String message) =>
-      print('[CONSOLE] \$message');
-
-  @override
-  void error(String message) =>
-      print('[CONSOLE ERROR] \$message');
+  @override void log(String msg) => print(msg);
+  @override void error(String msg) => print(msg);
 }
 
-class FileLogger implements Logger {
-  @override
-  void log(String message) =>
-      writeToFile('[FILE] \$message');
-
-  @override
-  void error(String message) =>
-      writeToFile('[FILE ERROR] \$message');
-
-  void writeToFile(String msg) { /* ... */ }
-}
-
-// A class can implement multiple interfaces
-class AuditLogger implements Logger, Serializable {
-  @override void log(String msg) { /* ... */ }
-  @override void error(String msg) { /* ... */ }
-  @override String serialize() => '{"type":"audit"}';
-}
-
-// Dependency injection via interface type
-void runApp(Logger logger) {
-  logger.log('App started');
-}
-
-runApp(ConsoleLogger()); // or FileLogger()''',
+// Dependency injection - swap any Logger impl
+void runApp(Logger logger) => logger.log('started');
+runApp(ConsoleLogger());''',
               ),
             ),
           ),
@@ -288,7 +227,7 @@ runApp(ConsoleLogger()); // or FileLogger()''',
                 AnimatedFadeUp(
                   delay: 700,
                   child: _IntBox(Icons.add_box, Colors.greenAccent,
-                      'Implement multiple', 'A class can implements A, B, C — limited only by consistency.'),
+                      'Implement multiple', 'A class can implements A, B, C - limited only by consistency.'),
                 ),
                 const SizedBox(height: 24),
                 AnimatedFadeUp(
@@ -301,7 +240,7 @@ runApp(ConsoleLogger()); // or FileLogger()''',
                       border: Border.all(color: Colors.white.withAlpha(20)),
                     ),
                     child: const Text(
-                      'This is powerful for dependency injection and testing — you can swap implementations without changing the consuming code.',
+                      'This is powerful for dependency injection and testing - you can swap implementations without changing the consuming code.',
                       style: TextStyle(color: Colors.white60, fontSize: 13, height: 1.5),
                     ),
                   ),
@@ -378,29 +317,18 @@ class _JavaCompareFrame extends StatelessWidget {
                     child: _LangBlock(
                       lang: 'Java',
                       color: Colors.orangeAccent,
-                      code: '''// Must declare interface explicitly
+                      code: '''// Must declare explicitly
 public interface Drawable {
     void draw();
     int getArea();
 }
 
-// A separate "interface" file exists
-// in the project for each contract
-
-// Implement it
 public class Square implements Drawable {
     private int side;
-    public Square(int side) {
-        this.side = side;
-    }
+    public Square(int side) { this.side = side; }
 
-    @Override
-    public void draw() { /* ... */ }
-
-    @Override
-    public int getArea() {
-        return side * side;
-    }
+    @Override public void draw() { /* ... */ }
+    @Override public int getArea() { return side * side; }
 }''',
                     ),
                   ),
@@ -412,27 +340,20 @@ public class Square implements Drawable {
                     child: _LangBlock(
                       lang: 'Dart',
                       color: AppColors.dartCyan,
-                      code: '''// Just write a regular class
-// It automatically IS an interface
+                      code: '''// Regular class IS an interface
 class Drawable {
   void draw() {}
   int getArea() => 0;
 }
 
-// Use "implements" to adopt the contract
-// without inheriting the implementation
+// implements = contract only
 class Square implements Drawable {
   final int side;
   Square(this.side);
-
-  @override
-  void draw() { /* ... */ }
-
-  @override
-  int getArea() => side * side;
+  @override void draw() {}
+  @override int getArea() => side * side;
 }
 
-// Square "is-a" Drawable
 Drawable d = Square(5);
 print(d.getArea()); // 25''',
                     ),
@@ -452,7 +373,7 @@ print(d.getArea()); // 25''',
                 border: Border.all(color: AppColors.dartBlue.withAlpha(50)),
               ),
               child: const Text(
-                'In Dart, the same class can be used as both a concrete implementation (via extends) AND as an interface contract (via implements) — a level of flexibility Java doesn\'t have.',
+                'In Dart, the same class can be used as both a concrete implementation (via extends) AND as an interface contract (via implements) - a level of flexibility Java doesn\'t have.',
                 style: TextStyle(color: Colors.white70, fontSize: 14, height: 1.4),
               ),
             ),

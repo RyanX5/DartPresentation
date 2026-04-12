@@ -79,7 +79,7 @@ class _NoSharedMemoryFrame extends StatelessWidget {
                     icon: Icons.bolt,
                     color: Colors.amberAccent,
                     title: 'Race Conditions',
-                    desc: 'The outcome depends on the order threads execute — which is non-deterministic at runtime.',
+                    desc: 'The outcome depends on the order threads execute - which is non-deterministic at runtime.',
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -279,7 +279,7 @@ class _IsolatesFrame extends StatelessWidget {
                 AnimatedFadeUp(
                   delay: 250,
                   child: const Text(
-                    'Each isolate has its own memory heap — they cannot share objects.',
+                    'Each isolate has its own memory heap - they cannot share objects.',
                     style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w800, height: 1.3),
                   ),
                 ),
@@ -288,13 +288,13 @@ class _IsolatesFrame extends StatelessWidget {
                     'Separate heap', 'Each isolate allocates its own memory. The GC runs independently per isolate.')),
                 const SizedBox(height: 14),
                 AnimatedFadeUp(delay: 550, child: _IsoFact(Icons.people, Colors.orangeAccent,
-                    'Actor model', 'Similar to Erlang\'s processes or Akka actors — concurrency via message passing.')),
+                    'Actor model', 'Similar to Erlang\'s processes or Akka actors - concurrency via message passing.')),
                 const SizedBox(height: 14),
                 AnimatedFadeUp(delay: 700, child: _IsoFact(Icons.developer_board, Colors.greenAccent,
-                    'True parallelism', 'Unlike async/await (single thread), isolates run on separate OS threads — full CPU utilization.')),
+                    'True parallelism', 'Unlike async/await (single thread), isolates run on separate OS threads - full CPU utilization.')),
                 const SizedBox(height: 14),
                 AnimatedFadeUp(delay: 850, child: _IsoFact(Icons.calculate, Colors.purpleAccent,
-                    'When to use', 'CPU-intensive work: image processing, JSON parsing, encryption — anything that would block the UI.')),
+                    'When to use', 'CPU-intensive work: image processing, JSON parsing, encryption - anything that would block the UI.')),
               ],
             ),
           ),
@@ -307,31 +307,20 @@ class _IsolatesFrame extends StatelessWidget {
                 fontSize: 14,
                 code: '''import 'dart:isolate';
 
-// Simple way: Isolate.run() (Dart 2.19+)
+// Isolate.run() - simplest approach
 Future<void> main() async {
-  // Runs in a separate isolate
-  // Does not block the main isolate
-  int result = await Isolate.run(() {
-    // Heavy CPU work here
-    return expensiveComputation();
-  });
+  final result = await Isolate.run(heavyWork);
   print('Result: \$result');
 }
 
-int expensiveComputation() {
-  // Simulate heavy work
+int heavyWork() {
   int sum = 0;
-  for (int i = 0; i < 100000000; i++) {
-    sum += i;
-  }
+  for (int i = 0; i < 100000000; i++) sum += i;
   return sum;
 }
 
-// Without isolate — this would freeze the UI
-// await expensiveComputation(); // blocks!
-
-// With isolate — UI stays responsive:
-// Isolate.run(expensiveComputation); // parallel!''',
+// Without: freezes the UI (blocks)
+// With:    UI stays responsive (parallel)''',
               ),
             ),
           ),
@@ -388,44 +377,20 @@ class _MessagePassingFrame extends StatelessWidget {
                 fontSize: 13,
                 code: '''import 'dart:isolate';
 
-// Manual isolate with SendPort/ReceivePort
 Future<void> main() async {
-  // Port to receive messages from the isolate
-  final receivePort = ReceivePort();
-
-  // Spawn an isolate, give it the send port
-  await Isolate.spawn(
-    workerIsolate,
-    receivePort.sendPort, // only this is shared
-  );
-
-  // Listen for messages
-  await for (final message in receivePort) {
-    print('Main received: \$message');
-    if (message == 'done') {
-      receivePort.close();
-      break;
-    }
+  final port = ReceivePort();
+  await Isolate.spawn(worker, port.sendPort);
+  await for (final msg in port) {
+    print('Main got: \$msg');
+    if (msg == 'done') { port.close(); break; }
   }
 }
 
-// This function runs in its own isolate
-void workerIsolate(SendPort sendPort) {
-  // Send data back to main isolate
-  sendPort.send('Processing...');
-
-  // Simulate work
-  int result = 0;
-  for (int i = 0; i < 1000000; i++) result += i;
-
-  sendPort.send('Result: \$result');
-  sendPort.send('done'); // signal completion
-}
-
-// Output:
-// Main received: Processing...
-// Main received: Result: 499999500000
-// Main received: done''',
+void worker(SendPort send) {
+  send.send('Processing...');
+  send.send('Result: 42');
+  send.send('done');
+}''',
               ),
             ),
           ),
@@ -445,7 +410,7 @@ void workerIsolate(SendPort sendPort) {
                 AnimatedFadeUp(
                   delay: 250,
                   child: const Text(
-                    'Isolates communicate by passing serialized messages — never shared pointers.',
+                    'Isolates communicate by passing serialized messages - never shared pointers.',
                     style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w800, height: 1.3),
                   ),
                 ),
@@ -466,7 +431,7 @@ void workerIsolate(SendPort sendPort) {
                       border: Border.all(color: AppColors.dartBlue.withAlpha(50)),
                     ),
                     child: const Text(
-                      'In practice, most Flutter developers use compute() or Isolate.run() — the low-level SendPort API is only needed for persistent background isolates.',
+                      'In practice, most Flutter developers use compute() or Isolate.run() - the low-level SendPort API is only needed for persistent background isolates.',
                       style: TextStyle(color: Colors.white60, fontSize: 13, height: 1.5),
                     ),
                   ),

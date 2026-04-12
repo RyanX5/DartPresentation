@@ -1,7 +1,7 @@
 import 'package:dart_presentation/screens/default_slide.dart';
 import 'package:dart_presentation/utils/theme.dart';
 import 'package:dart_presentation/widgets/animated_fade_up.dart';
-import 'package:dart_presentation/widgets/code_display.dart';
+import 'package:dart_presentation/widgets/dartpad/dartpad_embed.dart';
 import 'package:dart_presentation/widgets/wrapper.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +12,7 @@ class Slide19Demo extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultSlide(
       title: 'Live Demo',
-      subtitle: 'Dart in action — on DartPad.',
+      subtitle: 'Dart in action - on DartPad.',
       childrenSlides: [
         _SetupFrame(),
         _HelloWorldFrame(),
@@ -65,7 +65,7 @@ class _SetupFrame extends StatelessWidget {
             AnimatedFadeUp(
               delay: 400,
               child: Text(
-                'dartpad.dev — a browser-based Dart & Flutter IDE',
+                'dartpad.dev - a browser-based Dart & Flutter IDE',
                 style: TextStyle(color: Colors.white.withAlpha(150), fontSize: 22),
               ),
             ),
@@ -129,7 +129,7 @@ class _DemoCard extends StatelessWidget {
   }
 }
 
-// ── Frame 2: Hello World ────────────────────────────────────────────────────────
+// ── Frame 2: Hello World (live DartPad) ─────────────────────────────────────────
 
 class _HelloWorldFrame extends StatelessWidget {
   const _HelloWorldFrame();
@@ -138,44 +138,17 @@ class _HelloWorldFrame extends StatelessWidget {
   Widget build(BuildContext context) {
     return Wrapper(
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
             flex: 6,
             child: AnimatedFadeUp(
               delay: 200,
-              child: CodeDisplay(
-                fontSize: 15,
-                code: '''// Every Dart program starts at main()
-void main() {
-  print('Hello, World!');
-
-  // Variables — type inferred
-  var name = 'Dart';
-  int version = 3;
-  final double since = 2011;
-
-  // String interpolation
-  print('Welcome to \$name \$version!');
-  print('Designed since \${since.toInt()}.');
-
-  // Collections
-  var languages = ['Dart', 'Python', 'Java'];
-  for (var lang in languages) {
-    print('  Language: \$lang');
-  }
-
-  // Null safety in action
-  String? maybeNull = null;
-  print(maybeNull ?? 'No value provided');
-
-  // Named function
-  greet('World', greeting: 'Hello');
-}
-
-void greet(String name, {String greeting = 'Hi'}) {
-  print('\$greeting, \$name!');
-}''',
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: const DartpadEmbed(
+                  embedUrl: 'https://dartpad.dev/embed-dart.html?theme=dark&run=true',
+                ),
               ),
             ),
           ),
@@ -195,7 +168,7 @@ void greet(String name, {String greeting = 'Hi'}) {
                 AnimatedFadeUp(
                   delay: 250,
                   child: const Text(
-                    'Standard Hello World — showcasing core Dart features.',
+                    'Hello World - showcasing core Dart features.',
                     style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w800, height: 1.3),
                   ),
                 ),
@@ -208,7 +181,7 @@ void greet(String name, {String greeting = 'Hi'}) {
                 const SizedBox(height: 12),
                 AnimatedFadeUp(delay: 700, child: _Point(Colors.purpleAccent, 'Null coalescing', '?? provides a fallback for null values.')),
                 const SizedBox(height: 12),
-                AnimatedFadeUp(delay: 800, child: _Point(AppColors.dartCyan, 'Named params', 'greeting: \'Hello\' — self-documenting calls.')),
+                AnimatedFadeUp(delay: 800, child: _Point(AppColors.dartCyan, 'Named params', 'greeting: \'Hello\' - self-documenting calls.')),
               ],
             ),
           ),
@@ -246,7 +219,7 @@ class _Point extends StatelessWidget {
   }
 }
 
-// ── Frame 3: Fibonacci ─────────────────────────────────────────────────────────
+// ── Frame 3: Fibonacci (live DartPad) ──────────────────────────────────────────
 
 class _FibonacciFrame extends StatelessWidget {
   const _FibonacciFrame();
@@ -255,62 +228,17 @@ class _FibonacciFrame extends StatelessWidget {
   Widget build(BuildContext context) {
     return Wrapper(
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
             flex: 6,
             child: AnimatedFadeUp(
               delay: 200,
-              child: CodeDisplay(
-                fontSize: 14,
-                code: '''// Fibonacci using Dart's elegant syntax
-
-class FibCalculator {
-  // Named constructor shorthand
-  final int limit;
-  FibCalculator({required this.limit});
-
-  // Generator — produces sequence lazily
-  Iterable<int> sequence() sync* {
-    int a = 0, b = 1;
-    int count = 0;
-    while (count < limit) {
-      yield a;
-      final next = a + b;
-      a = b;
-      b = next;
-      count++;
-    }
-  }
-
-  // Getter — computed property
-  int get sum => sequence().reduce((a, b) => a + b);
-
-  // Static factory
-  static FibCalculator forFirst(int n) =>
-      FibCalculator(limit: n);
-}
-
-void main() {
-  var fib = FibCalculator.forFirst(10);
-
-  // for-in over a generator
-  print('Sequence:');
-  for (var n in fib.sequence()) {
-    process(n);
-  }
-
-  // Functional style
-  var doubled = fib.sequence()
-      .map((n) => n * 2)
-      .toList();
-
-  print('Sum: \${fib.sum}');
-  print('Doubled: \$doubled');
-}
-
-void process(int n) =>
-    print('  Fib: \$n');''',
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: const DartpadEmbed(
+                  embedUrl: 'https://dartpad.dev/embed-dart.html?theme=dark',
+                ),
               ),
             ),
           ),

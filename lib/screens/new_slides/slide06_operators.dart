@@ -83,29 +83,16 @@ class _PrecedenceFrame extends StatelessWidget {
               delay: 300,
               child: CodeDisplay(
                 fontSize: 14,
-                code: '''// Standard precedence (high → low)
-int result = 2 + 3 * 4;   // = 14, not 20
-int a = (2 + 3) * 4;      // = 20
+                code: '''int result = 2 + 3 * 4;   // 14, not 20
+int quot = 10 ~/ 3;       // 3 (integer division)
 
-// Dart-unique: integer division
-int quotient = 10 ~/ 3;   // = 3
-
-// Null-coalescing
 String? name = null;
-String display = name ?? 'Anonymous';
+String s = name ?? 'Anonymous'; // null-coalescing
+name ??= 'Default';             // null-aware assign
+int? len = name?.length;        // null-safe call
 
-// Null-aware assignment
-name ??= 'Default'; // only assigns if null
-
-// Null-safe method call
-String? city;
-int? len = city?.length; // null, no crash
-
-// Cascade operator (..)
 List<int> nums = []
-  ..add(1)
-  ..add(2)
-  ..add(3);''',
+  ..add(1)..add(2)..add(3); // cascade''',
               ),
             ),
           ),
@@ -204,7 +191,7 @@ class _ExceptionFrame extends StatelessWidget {
                 AnimatedFadeUp(delay: 850, child: _ExBlock(
                   'finally { }',
                   AppColors.dartCyan,
-                  'Always runs — whether or not an exception was thrown. Great for cleanup.',
+                  'Always runs - whether or not an exception was thrown. Great for cleanup.',
                 )),
               ],
             ),
@@ -216,29 +203,19 @@ class _ExceptionFrame extends StatelessWidget {
               delay: 300,
               child: CodeDisplay(
                 fontSize: 14,
-                code: '''import 'dart:io';
-
-void readFile(String path) {
-  try {
-    final file = File(path);
-    final content = file.readAsStringSync();
-    print(content);
-  } on FileSystemException catch (e, stackTrace) {
-    // Caught a specific exception type
-    print('File error: \${e.message}');
-    print('Stack: \$stackTrace');
-  } catch (e) {
-    // Catch-all fallback
-    print('Unexpected error: \$e');
-  } finally {
-    // Always runs — cleanup goes here
-    print('Finished attempting to read file.');
-  }
+                code: '''try {
+  int result = riskyOperation();
+  print(result);
+} on FormatException catch (e) {
+  print('Format error: \${e.message}');
+} catch (e) {
+  print('Unexpected: \$e');
+} finally {
+  print('Always runs.');
 }
 
-// Throwing your own exception
 void validate(int age) {
-  if (age < 0) throw ArgumentError('Age cannot be negative');
+  if (age < 0) throw ArgumentError('Age negative');
 }''',
               ),
             ),
@@ -275,7 +252,7 @@ class _ExBlock extends StatelessWidget {
   }
 }
 
-// ── Frame 3: Code Example — Integer Division by Zero ──────────────────────────
+// ── Frame 3: Code Example - Integer Division by Zero ──────────────────────────
 
 class _CodeExampleFrame extends StatelessWidget {
   const _CodeExampleFrame();
@@ -294,21 +271,17 @@ class _CodeExampleFrame extends StatelessWidget {
                 fontSize: 15,
                 code: '''void safeDivide(int a, int b) {
   try {
-    // ~/ is Dart\'s integer division operator
-    int result = a ~/ b;
-    print('Result: \$result');
+    print(a ~/ b);      // ~/ = integer division
   } on IntegerDivisionByZeroException {
-    print('Error: Cannot divide by zero!');
-  } catch (e) {
-    print('Caught: \$e');
+    print('Cannot divide by zero!');
   } finally {
-    print('Division attempted.');
+    print('Attempted.');
   }
 }
 
 void main() {
-  safeDivide(10, 3);   // Result: 3
-  safeDivide(10, 0);   // Error: Cannot divide by zero!
+  safeDivide(10, 3); // 3
+  safeDivide(10, 0); // Cannot divide by zero!
 }''',
               ),
             ),
@@ -348,7 +321,7 @@ void main() {
                   child: _NoteBox(
                     'Typed catch',
                     Colors.orangeAccent,
-                    'Catching on IntegerDivisionByZeroException handles only that specific error — other exceptions will propagate.',
+                    'Catching on IntegerDivisionByZeroException handles only that specific error - other exceptions will propagate.',
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -357,7 +330,7 @@ void main() {
                   child: _NoteBox(
                     'finally always runs',
                     Colors.greenAccent,
-                    'The finally block executes whether the division succeeded or threw — ideal for cleanup.',
+                    'The finally block executes whether the division succeeded or threw - ideal for cleanup.',
                   ),
                 ),
               ],

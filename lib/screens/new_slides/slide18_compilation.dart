@@ -21,7 +21,7 @@ class Slide18Compilation extends StatelessWidget {
   }
 }
 
-// ── Frame 1: JIT — Hot Reload ──────────────────────────────────────────────────
+// ── Frame 1: JIT - Hot Reload ──────────────────────────────────────────────────
 
 class _JitFrame extends StatefulWidget {
   const _JitFrame();
@@ -83,13 +83,13 @@ class _JitFrameState extends State<_JitFrame> {
                 ),
                 const SizedBox(height: 32),
                 AnimatedFadeUp(delay: 400, child: _JitFact(Icons.bolt, Colors.amberAccent,
-                    'Sub-second feedback', 'Hot reload injects updated code into the running VM — typically under 500ms.')),
+                    'Sub-second feedback', 'Hot reload injects updated code into the running VM - typically under 500ms.')),
                 const SizedBox(height: 14),
                 AnimatedFadeUp(delay: 550, child: _JitFact(Icons.memory, AppColors.dartBlue,
-                    'State preserved', 'Unlike a full restart, hot reload keeps app state — scroll position, form data, etc.')),
+                    'State preserved', 'Unlike a full restart, hot reload keeps app state - scroll position, form data, etc.')),
                 const SizedBox(height: 14),
                 AnimatedFadeUp(delay: 700, child: _JitFact(Icons.speed, Colors.greenAccent,
-                    'Developer productivity', 'The REPL-like development loop Dart/Flutter is famous for — no rebuild cycle.')),
+                    'Developer productivity', 'The REPL-like development loop Dart/Flutter is famous for - no rebuild cycle.')),
                 const SizedBox(height: 24),
                 AnimatedFadeUp(
                   delay: 850,
@@ -211,7 +211,7 @@ class _JitFact extends StatelessWidget {
   }
 }
 
-// ── Frame 2: AOT — Production Native Code ────────────────────────────────────
+// ── Frame 2: AOT - Production Native Code ────────────────────────────────────
 
 class _AotFrame extends StatelessWidget {
   const _AotFrame();
@@ -231,7 +231,7 @@ class _AotFrame extends StatelessWidget {
           AnimatedFadeUp(
             delay: 200,
             child: const Text(
-              'Ahead-Of-Time compilation for production — fully native, fully optimized.',
+              'Ahead-Of-Time compilation for production - fully native, fully optimized.',
               style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w800),
             ),
           ),
@@ -256,7 +256,7 @@ class _AotFrame extends StatelessWidget {
                         icon: Icons.bolt,
                         color: Colors.amberAccent,
                         title: 'Instant startup',
-                        desc: 'No warmup phase. Unlike JVM apps, AOT Dart starts executing immediately — critical for mobile perceived performance.',
+                        desc: 'No warmup phase. Unlike JVM apps, AOT Dart starts executing immediately - critical for mobile perceived performance.',
                       )),
                       const SizedBox(height: 16),
                       AnimatedFadeUp(delay: 600, child: _AotCard(

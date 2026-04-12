@@ -48,7 +48,7 @@ class _IfElseFrame extends StatelessWidget {
                 AnimatedFadeUp(
                   delay: 250,
                   child: const Text(
-                    'Dart\'s if/else is identical to Java and C — familiar and predictable.',
+                    'Dart\'s if/else is identical to Java and C - familiar and predictable.',
                     style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w700, height: 1.3),
                   ),
                 ),
@@ -56,7 +56,7 @@ class _IfElseFrame extends StatelessWidget {
                 AnimatedFadeUp(
                   delay: 400,
                   child: _InfoPoint(Icons.check_circle_outline, Colors.greenAccent,
-                      'Strict boolean required', 'The condition must evaluate to true or false — no truthy/falsy conversions.'),
+                      'Strict boolean required', 'The condition must evaluate to true or false - no truthy/falsy conversions.'),
                 ),
                 const SizedBox(height: 16),
                 AnimatedFadeUp(
@@ -139,23 +139,16 @@ class _SwitchFrame extends StatelessWidget {
               delay: 200,
               child: CodeDisplay(
                 fontSize: 14,
-                code: '''String getDayType(String day) {
-  switch (day) {
-    case 'Monday':
-    case 'Tuesday':
-    case 'Wednesday':
-    case 'Thursday':
-    case 'Friday':
-      return 'Weekday';
-    case 'Saturday':
-    case 'Sunday':
-      return 'Weekend';
-    default:
-      return 'Unknown';
-  }
+                code: '''// Classic switch
+switch (day) {
+  case 'Saturday':
+  case 'Sunday':
+    return 'Weekend';
+  default:
+    return 'Weekday';
 }
 
-// Dart 3: Enhanced switch expression
+// Dart 3: Switch expression (concise)
 String type = switch (day) {
   'Saturday' || 'Sunday' => 'Weekend',
   _ => 'Weekday',
@@ -193,7 +186,7 @@ String type = switch (day) {
                 AnimatedFadeUp(
                   delay: 550,
                   child: _InfoPoint(Icons.auto_awesome, AppColors.dartCyan,
-                      'Dart 3: Switch expressions', 'The new switch expression syntax is concise and returns a value directly — no need for break.'),
+                      'Dart 3: Switch expressions', 'The new switch expression syntax is concise and returns a value directly - no need for break.'),
                 ),
                 const SizedBox(height: 16),
                 AnimatedFadeUp(

@@ -54,7 +54,7 @@ class _InheritanceFrame extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
                 AnimatedFadeUp(delay: 400, child: _InhPoint(Icons.account_tree, AppColors.dartBlue,
-                    'extends', 'A class can extend exactly one parent class — the same model as Java.')),
+                    'extends', 'A class can extend exactly one parent class - the same model as Java.')),
                 const SizedBox(height: 14),
                 AnimatedFadeUp(delay: 550, child: _InhPoint(Icons.upgrade, Colors.orangeAccent,
                     'Method overriding', 'Use @override annotation to replace a parent method. Dart enforces this annotation exists.')),
@@ -74,48 +74,24 @@ class _InheritanceFrame extends StatelessWidget {
               delay: 300,
               child: CodeDisplay(
                 fontSize: 14,
-                code: '''// Abstract base class
-abstract class Animal {
+                code: '''abstract class Animal {
   String name;
   Animal(this.name);
-
-  // Abstract — must be overridden
-  String speak();
-
-  // Concrete — inherited as-is
-  void describe() => print('\$name says: \${speak()}');
+  String speak(); // must override
+  void describe() => print('\$name: \${speak()}');
 }
 
 class Dog extends Animal {
-  Dog(super.name); // passes name to Animal()
-
-  @override
-  String speak() => 'Woof!';
+  Dog(super.name);
+  @override String speak() => 'Woof!';
 }
 
 class Cat extends Animal {
   Cat(super.name);
-
-  @override
-  String speak() => 'Meow!';
-
-  // Extending, then calling super
-  @override
-  void describe() {
-    super.describe();           // Animal.describe()
-    print('(and I\'m aloof)');
-  }
+  @override String speak() => 'Meow!';
 }
 
-void main() {
-  var animals = [Dog('Rex'), Cat('Whiskers')];
-  for (var a in animals) {
-    a.describe();
-  }
-  // Rex says: Woof!
-  // Whiskers says: Meow!
-  // (and I\'m aloof)
-}''',
+[Dog('Rex'), Cat('Whiskers')].forEach((a) => a.describe());''',
               ),
             ),
           ),
@@ -170,49 +146,22 @@ class _MixinsFrame extends StatelessWidget {
               delay: 200,
               child: CodeDisplay(
                 fontSize: 13,
-                code: '''// Mixin — a bundle of reusable methods
-// Cannot be instantiated on its own
-mixin Flyable {
-  double altitude = 0;
-  void fly() => print('\${runtimeType} is flying at \$altitude m');
-  void land() { altitude = 0; print('\${runtimeType} landed'); }
-}
+                code: '''mixin Flyable { void fly() => print('\$runtimeType flying'); }
+mixin Swimmable { void swim() => print('\$runtimeType swimming'); }
 
-mixin Swimmable {
-  void swim() => print('\${runtimeType} is swimming');
-}
+class Animal { String name; Animal(this.name); }
 
-mixin Runnable {
-  void run() => print('\${runtimeType} is running');
-}
-
-// Single inheritance — one base class
-class Animal {
-  String name;
-  Animal(this.name);
-}
-
-// Combine multiple mixins with "with"
-class Duck extends Animal with Flyable, Swimmable, Runnable {
+class Duck extends Animal with Flyable, Swimmable {
   Duck(super.name);
 }
 
-class Penguin extends Animal with Swimmable, Runnable {
+class Penguin extends Animal with Swimmable {
   Penguin(super.name);
-  // Can fly? No — Flyable not mixed in!
+  // fly() not available - compile error if called
 }
 
-void main() {
-  var duck = Duck('Donald');
-  duck.fly();    // Duck is flying at 0.0 m
-  duck.swim();   // Duck is swimming
-  duck.run();    // Duck is running
-
-  var penguin = Penguin('Tux');
-  penguin.swim(); // Penguin is swimming
-  penguin.run();  // Penguin is running
-  // penguin.fly(); // COMPILE ERROR — no Flyable
-}''',
+Duck('Donald')..fly()..swim();
+Penguin('Tux').swim();''',
               ),
             ),
           ),
@@ -232,7 +181,7 @@ void main() {
                 AnimatedFadeUp(
                   delay: 250,
                   child: const Text(
-                    'Reuse behavior across class hierarchies — without multiple inheritance.',
+                    'Reuse behavior across class hierarchies - without multiple inheritance.',
                     style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w800, height: 1.3),
                   ),
                 ),
@@ -252,7 +201,7 @@ void main() {
                         const Text('Why mixins?', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                         const SizedBox(height: 10),
                         Text(
-                          'The Diamond Problem: if A and B both define speak(), and C extends both — whose speak() does C use?\n\nDart\'s answer: don\'t allow it. Use mixins for horizontal code reuse instead.',
+                          'The Diamond Problem: if A and B both define speak(), and C extends both - whose speak() does C use?\n\nDart\'s answer: don\'t allow it. Use mixins for horizontal code reuse instead.',
                           style: TextStyle(color: Colors.white.withAlpha(160), fontSize: 13, height: 1.6),
                         ),
                       ],
@@ -267,7 +216,7 @@ void main() {
                 const SizedBox(height: 10),
                 AnimatedFadeUp(
                   delay: 700,
-                  child: _MixRule('with Flyable, Runnable', Colors.orangeAccent, 'Apply multiple mixins — composing behaviors.'),
+                  child: _MixRule('with Flyable, Runnable', Colors.orangeAccent, 'Apply multiple mixins - composing behaviors.'),
                 ),
                 const SizedBox(height: 10),
                 AnimatedFadeUp(
@@ -306,7 +255,7 @@ class _MixRule extends StatelessWidget {
   }
 }
 
-// ── Frame 3: Quiz — Two Base Classes ──────────────────────────────────────────
+// ── Frame 3: Quiz - Two Base Classes ──────────────────────────────────────────
 
 class _QuizFrame extends StatefulWidget {
   const _QuizFrame();
@@ -404,11 +353,11 @@ class C extends A, B {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text('No — single inheritance only!',
+                              const Text('No - single inheritance only!',
                                   style: TextStyle(color: Colors.orangeAccent, fontSize: 22, fontWeight: FontWeight.bold)),
                               const SizedBox(height: 8),
                               Text(
-                                'A Dart class can only extend one base class. However, it CAN apply multiple mixins with the with keyword — pulling in behavior from many sources.\n\nclass C extends A with BehaviorMixin, AnotherMixin { }',
+                                'A Dart class can only extend one base class. However, it CAN apply multiple mixins with the with keyword - pulling in behavior from many sources.\n\nclass C extends A with BehaviorMixin, AnotherMixin { }',
                                 style: TextStyle(color: Colors.white.withAlpha(180), fontSize: 15, height: 1.6),
                               ),
                             ],

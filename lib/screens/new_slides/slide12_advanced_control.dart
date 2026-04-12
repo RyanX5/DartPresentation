@@ -48,7 +48,7 @@ class _GeneratorsFrame extends StatelessWidget {
                 AnimatedFadeUp(
                   delay: 250,
                   child: const Text(
-                    'Produce sequences lazily — only computing the next value when requested.',
+                    'Produce sequences lazily - only computing the next value when requested.',
                     style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w700, height: 1.3),
                   ),
                 ),
@@ -84,39 +84,20 @@ class _GeneratorsFrame extends StatelessWidget {
               delay: 300,
               child: CodeDisplay(
                 fontSize: 14,
-                code: '''// sync* — synchronous generator
-// Returns an Iterable<int>
-Iterable<int> countdown(int from) sync* {
-  for (int i = from; i >= 0; i--) {
-    yield i; // pause here, emit value
-  }
+                code: '''// sync* - returns Iterable (lazy)
+Iterable<int> countdown(int n) sync* {
+  for (int i = n; i >= 0; i--) yield i;
 }
+for (var n in countdown(5)) print(n); // 5 4 3 2 1 0
 
-void main() {
-  // Values computed lazily on each iteration
-  for (var n in countdown(5)) {
-    print(n); // 5 4 3 2 1 0
-  }
-
-  // Only compute what you need
-  print(countdown(1000000).take(3).toList());
-  // [1000000, 999999, 999998] — fast!
-}
-
-// async* — asynchronous generator
-// Returns a Stream<String>
-Stream<String> ticker(int count) async* {
-  for (int i = 0; i < count; i++) {
+// async* - returns Stream
+Stream<String> ticker(int n) async* {
+  for (int i = 0; i < n; i++) {
     await Future.delayed(Duration(seconds: 1));
-    yield 'Tick \$i'; // emits over time
+    yield 'Tick \$i';
   }
 }
-
-Future<void> runTicker() async {
-  await for (var msg in ticker(3)) {
-    print(msg); // Tick 0, Tick 1, Tick 2
-  }
-}''',
+await for (var msg in ticker(3)) print(msg);''',
               ),
             ),
           ),
@@ -189,40 +170,23 @@ class _YieldFrame extends StatelessWidget {
               delay: 200,
               child: CodeDisplay(
                 fontSize: 14,
-                code: '''// yield — emit a single value, then pause
-Iterable<int> range(int start, int end) sync* {
-  for (int i = start; i <= end; i++) {
-    yield i;
-    // execution pauses here
-    // resumes when next value requested
-  }
+                code: '''// yield emits value, then pauses
+Iterable<int> range(int s, int e) sync* {
+  for (int i = s; i <= e; i++) yield i;
 }
 
-// yield* — delegate to another iterable
-// (spreads all values from another generator)
+// yield* delegates to another generator
 Iterable<int> combined() sync* {
-  yield* range(1, 3);  // yields 1, 2, 3
-  yield 99;             // then yields 99
-  yield* range(7, 9);  // then yields 7, 8, 9
+  yield* range(1, 3); yield 99;
 }
+print(combined().toList()); // [1,2,3,99]
 
-print(combined().toList());
-// [1, 2, 3, 99, 7, 8, 9]
-
-// Fibonacci via generator
-Iterable<int> fibonacci() sync* {
+// Infinite fib - only computes on demand
+Iterable<int> fib() sync* {
   int a = 0, b = 1;
-  while (true) {           // infinite sequence!
-    yield a;
-    int next = a + b;
-    a = b;
-    b = next;
-  }
+  while (true) { yield a; var t=a+b; a=b; b=t; }
 }
-
-// Safe — only takes what it needs
-print(fibonacci().take(8).toList());
-// [0, 1, 1, 2, 3, 5, 8, 13]''',
+print(fib().take(5).toList()); // [0,1,1,2,3]''',
               ),
             ),
           ),
@@ -242,7 +206,7 @@ print(fibonacci().take(8).toList());
                 AnimatedFadeUp(
                   delay: 250,
                   child: const Text(
-                    'Emit a value and pause — resume on next request.',
+                    'Emit a value and pause - resume on next request.',
                     style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w800, height: 1.3),
                   ),
                 ),
@@ -251,7 +215,7 @@ print(fibonacci().take(8).toList());
                     'Emit one value. Function execution pauses until the next value is requested.')),
                 const SizedBox(height: 14),
                 AnimatedFadeUp(delay: 550, child: _YieldBox('yield* iterable', Colors.orangeAccent,
-                    'Delegate — emits all values from another generator or iterable, one at a time.')),
+                    'Delegate - emits all values from another generator or iterable, one at a time.')),
                 const SizedBox(height: 28),
                 AnimatedFadeUp(
                   delay: 700,
@@ -263,7 +227,7 @@ print(fibonacci().take(8).toList());
                       border: Border.all(color: AppColors.dartBlue.withAlpha(50)),
                     ),
                     child: const Text(
-                      'Key insight: generators are lazy. An infinite sequence like fibonacci() only computes values as they\'re consumed — it never tries to generate all of them.',
+                      'Key insight: generators are lazy. An infinite sequence like fibonacci() only computes values as they\'re consumed - it never tries to generate all of them.',
                       style: TextStyle(color: Colors.white70, fontSize: 13, height: 1.6),
                     ),
                   ),
@@ -347,36 +311,23 @@ class _ExceptionPropFrame extends StatelessWidget {
                     delay: 300,
                     child: CodeDisplay(
                       fontSize: 13,
-                      code: '''void c() {
-  // Throws — not caught here
-  throw FormatException('bad data');
-}
-
-void b() {
-  c(); // exception propagates up
-}
+                      code: '''void c() => throw FormatException('bad data');
+void b() => c(); // propagates up
 
 void a() {
   try {
-    b(); // exception caught here!
+    b();
   } on FormatException catch (e, stack) {
     print('Caught: \${e.message}');
-    // stack contains full call trace:
-    // a() → b() → c() → throw
-    print(stack);
   }
 }
 
-void main() {
-  a(); // exception handled, app continues
-
-  // Rethrow — handle + re-propagate
-  try {
-    b();
-  } catch (e) {
-    print('Logging error...');
-    rethrow; // passes to next handler
-  }
+// Rethrow - log then re-propagate
+try {
+  b();
+} catch (e) {
+  print('Logging...');
+  rethrow;
 }''',
                     ),
                   ),

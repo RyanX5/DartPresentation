@@ -48,7 +48,7 @@ class _InferenceFrame extends StatelessWidget {
                 AnimatedFadeUp(
                   delay: 250,
                   child: const Text(
-                    'Dart is statically typed — but uses type inference to feel dynamic.',
+                    'Dart is statically typed - but uses type inference to feel dynamic.',
                     style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w700, height: 1.3),
                   ),
                 ),
@@ -57,28 +57,28 @@ class _InferenceFrame extends StatelessWidget {
                   delay: 400,
                   child: _TypeCard('var', AppColors.dartBlue,
                       'Infer once, then fixed',
-                      'var x = 42 — Dart infers int. You can reassign with another int, but not a String.'),
+                      'var x = 42 - Dart infers int. You can reassign with another int, but not a String.'),
                 ),
                 const SizedBox(height: 16),
                 AnimatedFadeUp(
                   delay: 550,
                   child: _TypeCard('final', Colors.orangeAccent,
                       'Single-assignment',
-                      'final x = 42 — Assigned once, cannot be changed. Type is inferred.'),
+                      'final x = 42 - Assigned once, cannot be changed. Type is inferred.'),
                 ),
                 const SizedBox(height: 16),
                 AnimatedFadeUp(
                   delay: 700,
                   child: _TypeCard('const', Colors.purpleAccent,
                       'Compile-time constant',
-                      'const x = 42 — Value must be known at compile time. Deeply immutable.'),
+                      'const x = 42 - Value must be known at compile time. Deeply immutable.'),
                 ),
                 const SizedBox(height: 16),
                 AnimatedFadeUp(
                   delay: 850,
                   child: _TypeCard('dynamic', const Color(0xFFFF6B6B),
-                      'Escape hatch — avoid',
-                      'dynamic x = 42 — Opts out of type checking. Use sparingly; like Python\'s duck typing.'),
+                      'Escape hatch - avoid',
+                      'dynamic x = 42 - Opts out of type checking. Use sparingly; like Python\'s duck typing.'),
                 ),
               ],
             ),
@@ -90,30 +90,17 @@ class _InferenceFrame extends StatelessWidget {
               delay: 300,
               child: CodeDisplay(
                 fontSize: 14,
-                code: '''// Explicit type annotation
-int count = 0;
-String name = 'Dart';
+                code: '''var count = 0;        // inferred: int
+var name  = 'Dart';   // inferred: String
+// count = 'hello';   // ERROR: type mismatch
 
-// Type inference with var
-var count2 = 0;       // inferred: int
-var name2 = 'Dart';   // inferred: String
+final pi = 3.14159;   // set once
+// pi = 3.0;          // ERROR
 
-// count2 = 'hello';  // ERROR: type mismatch
+const max = 3;        // compile-time constant
 
-// final — set once, then immutable
-final pi = 3.14159;
-// pi = 3.0;  // ERROR: final variable
-
-// const — compile-time constant
-const maxRetries = 3;
-
-// dynamic — escape hatch (avoid!)
-dynamic anything = 42;
-anything = 'now a string'; // works, but risky
-
-// Explicit type is always allowed
-List<String> names = ['Alice', 'Bob'];
-Map<String, int> scores = {'Alice': 95};''',
+dynamic x = 42;
+x = 'string';         // works - but avoid!''',
               ),
             ),
           ),
@@ -177,32 +164,18 @@ class _NullSafetyFrame extends StatelessWidget {
               delay: 200,
               child: CodeDisplay(
                 fontSize: 14,
-                code: '''// Non-nullable by default (Dart 3)
-String name = 'Alice';
-// name = null;  // COMPILE ERROR
+                code: '''String name = 'Alice';  // non-nullable
+// name = null;           // COMPILE ERROR
 
-// Nullable with ?
-String? maybeNull = null;  // OK
+String? maybe = null;   // nullable
+int? len = maybe?.length; // null-safe access
+// maybe!.length - throws if null
 
-// Null-safe access
-int? length = maybeNull?.length; // null, no crash
+String s = maybe ?? 'Anonymous'; // default
+maybe ??= 'Default';             // assign if null
 
-// Null assertion (throws if null at runtime)
-int len = maybeNull!.length; // throws if null
-
-// Null-coalescing: provide a default
-String display = maybeNull ?? 'Anonymous';
-
-// Null-aware assignment
-maybeNull ??= 'Default'; // sets only if null
-
-// Late initialization
-late String lazyName; // declared but not yet set
-lazyName = 'Bob';     // set before first use
-
-// If check — promotes to non-nullable
-if (maybeNull != null) {
-  print(maybeNull.length); // safe — promoted!
+if (maybe != null) {
+  print(maybe.length); // promoted to non-null
 }''',
               ),
             ),
@@ -240,7 +213,7 @@ if (maybeNull != null) {
                 const SizedBox(height: 12),
                 AnimatedFadeUp(
                   delay: 600,
-                  child: _NullBox('T! (assertion)', const Color(0xFFFF6B6B), 'Force unwrap — crashes if null. Use sparingly.'),
+                  child: _NullBox('T! (assertion)', const Color(0xFFFF6B6B), 'Force unwrap - crashes if null. Use sparingly.'),
                 ),
                 const SizedBox(height: 12),
                 AnimatedFadeUp(
@@ -258,7 +231,7 @@ if (maybeNull != null) {
                       border: Border.all(color: Colors.greenAccent.withAlpha(50)),
                     ),
                     child: const Text(
-                      '"Sound" null safety means the Dart compiler guarantees that if a variable is non-nullable, it will NEVER be null — no exceptions, no loopholes.',
+                      '"Sound" null safety means the Dart compiler guarantees that if a variable is non-nullable, it will NEVER be null - no exceptions, no loopholes.',
                       style: TextStyle(color: Colors.white70, fontSize: 13, height: 1.5),
                     ),
                   ),
@@ -331,8 +304,8 @@ class _ComparisonFrame extends StatelessWidget {
                   lang: 'Python',
                   color: Colors.yellowAccent,
                   rows: [
-                    ('Typing', 'Dynamic — types known at runtime'),
-                    ('Null equivalent', 'None — no compile-time check'),
+                    ('Typing', 'Dynamic - types known at runtime'),
+                    ('Null equivalent', 'None - no compile-time check'),
                     ('Type errors', 'Surface at runtime, often in prod'),
                     ('Annotation', 'Optional hints (PEP 484), not enforced'),
                     ('Null crash', 'AttributeError when accessing None'),
@@ -343,8 +316,8 @@ class _ComparisonFrame extends StatelessWidget {
                   lang: 'Java',
                   color: Colors.orangeAccent,
                   rows: [
-                    ('Typing', 'Static — types at compile time'),
-                    ('Null equivalent', 'null — any reference can be null'),
+                    ('Typing', 'Static - types at compile time'),
+                    ('Null equivalent', 'null - any reference can be null'),
                     ('Type errors', 'Caught at compile time'),
                     ('Annotation', '@Nullable / @NonNull (optional)'),
                     ('Null crash', 'NullPointerException at runtime'),
@@ -355,10 +328,10 @@ class _ComparisonFrame extends StatelessWidget {
                   lang: 'Dart',
                   color: AppColors.dartCyan,
                   rows: [
-                    ('Typing', 'Static — inferred or explicit'),
-                    ('Null equivalent', 'T? — only when you opt in'),
+                    ('Typing', 'Static - inferred or explicit'),
+                    ('Null equivalent', 'T? - only when you opt in'),
                     ('Type errors', 'Caught at compile time'),
-                    ('Annotation', 'Built-in — T vs T? in the type'),
+                    ('Annotation', 'Built-in - T vs T? in the type'),
                     ('Null crash', 'Prevented at compile time ✓'),
                   ],
                 ))),

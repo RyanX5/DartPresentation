@@ -22,6 +22,6 @@ void initSocketService() {
     ]);
   } catch (e) {
     // Socket.IO script not loaded (e.g. running outside the Node server).
-    // Silently ignore — keyboard navigation still works normally.
+    // Silently ignore - keyboard navigation still works normally.
   }
 }

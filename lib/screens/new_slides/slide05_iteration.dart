@@ -66,7 +66,7 @@ class _LoopOverviewFrame extends StatelessWidget {
                 icon: Icons.loop,
                 desc: 'Repeats while a boolean condition is true. Checks condition before each iteration.',
                 snippet: 'while (condition) { }',
-                also: 'Condition must be strictly bool —\nno truthy values like Python/JS.',
+                also: 'Condition must be strictly bool :\nno truthy values like Python/JS.',
               ))),
               const SizedBox(width: 20),
               Expanded(child: AnimatedFadeUp(delay: 650, child: _LoopCard(
@@ -75,7 +75,7 @@ class _LoopOverviewFrame extends StatelessWidget {
                 icon: Icons.replay,
                 desc: 'Executes body at least once, then checks the condition at the end.',
                 snippet: 'do { } while (condition);',
-                also: 'Guarantees at least one execution\n— useful for input validation.',
+                also: 'Guarantees at least one execution\n: useful for input validation.',
               ))),
             ],
           ),
@@ -153,26 +153,17 @@ class _ForLoopFrame extends StatelessWidget {
               child: CodeDisplay(
                 fontSize: 15,
                 code: '''// Classic for loop
-for (int i = 1; i <= 10; i++) {
-  print(i);
-}
-// Output: 1 2 3 4 5 6 7 8 9 10
+for (int i = 1; i <= 5; i++) print(i);
 
-// For-in loop (iterables)
-List<String> fruits = ['apple', 'banana', 'cherry'];
-for (var fruit in fruits) {
-  print(fruit);
-}
+// For-in (any Iterable)
+for (var f in ['apple', 'banana']) print(f);
 
 // forEach with lambda
-fruits.forEach((fruit) => print(fruit));
+['apple', 'banana'].forEach(print);
 
-// While loop equivalent
-int i = 1;
-while (i <= 10) {
-  print(i);
-  i++;
-}''',
+// While loop
+int i = 0;
+while (i < 5) { print(i); i++; }''',
               ),
             ),
           ),
@@ -206,13 +197,13 @@ while (i <= 10) {
                 AnimatedFadeUp(
                   delay: 550,
                   child: _InfoPoint2(Icons.looks_two, const Color(0xFF7C4DFF),
-                      'for-in loop', 'Iterates over any Iterable — Lists, Sets, Maps, generators.'),
+                      'for-in loop', 'Iterates over any Iterable - Lists, Sets, Maps, generators.'),
                 ),
                 const SizedBox(height: 16),
                 AnimatedFadeUp(
                   delay: 700,
                   child: _InfoPoint2(Icons.looks_3, Colors.orangeAccent,
-                      'forEach + lambda', 'Functional style — passes each element to a callback. Chainable.'),
+                      'forEach + lambda', 'Functional style - passes each element to a callback. Chainable.'),
                 ),
               ],
             ),
@@ -242,7 +233,7 @@ Widget _InfoPoint2(IconData icon, Color color, String title, String desc) {
   );
 }
 
-// ── Frame 3: Quiz — while(1) ───────────────────────────────────────────────────
+// ── Frame 3: Quiz - while(1) ───────────────────────────────────────────────────
 
 class _QuizFrame extends StatefulWidget {
   const _QuizFrame();
@@ -296,7 +287,7 @@ class _QuizFrameState extends State<_QuizFrame> {
 while 1:
     print("looping forever")
 
-// In Dart — what does this do?
+// In Dart - what does this do?
 while (1) {
   print("looping forever");
 }''', fontSize: 15),
@@ -340,7 +331,7 @@ while (1) {
                                 style: TextStyle(color: Color(0xFFFF6B6B), fontSize: 22, fontWeight: FontWeight.bold)),
                             const SizedBox(height: 8),
                             Text(
-                              'Unlike Python\'s truthy values, Dart enforces strict boolean evaluation. The integer 1 is not a bool — this is a type error caught at compile time.\n\nUse while (true) { } for intentional infinite loops.',
+                              'Unlike Python\'s truthy values, Dart enforces strict boolean evaluation. The integer 1 is not a bool - this is a type error caught at compile time.\n\nUse while (true) { } for intentional infinite loops.',
                               style: TextStyle(color: Colors.white.withAlpha(180), fontSize: 15, height: 1.6),
                             ),
                           ],

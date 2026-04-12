@@ -70,7 +70,7 @@ class _StaticFrame extends StatelessWidget {
                 AnimatedFadeUp(delay: 700, child: _StatBox(
                   'static const',
                   Colors.greenAccent,
-                  'Compile-time constant attached to the class — a common pattern for configuration.',
+                  'Compile-time constant attached to the class - a common pattern for configuration.',
                   'Config.maxRetries',
                 )),
                 const SizedBox(height: 14),
@@ -91,43 +91,23 @@ class _StaticFrame extends StatelessWidget {
               child: CodeDisplay(
                 fontSize: 14,
                 code: '''class Counter {
-  static int _count = 0; // class-level state
-
-  Counter() {
-    _count++;
-  }
-
-  static int get count => _count; // static getter
-  static void reset() => _count = 0; // static method
+  static int _count = 0;
+  Counter() { _count++; }
+  static int get count => _count;
 }
+Counter(); Counter();
+print(Counter.count); // 2 - shared state
 
-// Singleton pattern with factory constructor
+// Singleton via factory constructor
 class Database {
   static final Database _instance = Database._();
-  Database._(); // private named constructor
-
-  factory Database() => _instance; // always same instance
-
-  void query(String sql) => print('Query: \$sql');
+  Database._();
+  factory Database() => _instance;
 }
+print(identical(Database(), Database())); // true
 
-// Static constants
 class Config {
   static const int maxRetries = 3;
-  static const Duration timeout = Duration(seconds: 30);
-  static const String baseUrl = 'https://api.example.com';
-}
-
-void main() {
-  var c1 = Counter();
-  var c2 = Counter();
-  print(Counter.count); // 2 — shared state
-
-  var db1 = Database();
-  var db2 = Database();
-  print(identical(db1, db2)); // true — same object
-
-  print(Config.maxRetries); // 3
 }''',
               ),
             ),
@@ -189,43 +169,25 @@ class _PrivacyFrame extends StatelessWidget {
               delay: 200,
               child: CodeDisplay(
                 fontSize: 14,
-                code: '''// LIBRARY-LEVEL PRIVACY via _ prefix
-// Private to the file/library, NOT just the class
-
-class BankAccount {
-  // _balance: private — only accessible in this file
-  double _balance;
+                code: '''class BankAccount {
+  double _balance;      // private (file-level)
   final String owner;
 
   BankAccount(this.owner, double initial)
       : _balance = initial;
 
-  // Public API — controlled access
-  double get balance => _balance;
+  double get balance => _balance; // public getter
 
   bool deposit(double amount) {
     if (amount <= 0) return false;
     _balance += amount;
     return true;
   }
-
-  bool withdraw(double amount) {
-    if (amount <= 0 || amount > _balance) return false;
-    _balance -= amount;
-    return true;
-  }
-
-  // Private helper — internal use only
-  void _logTransaction(String type, double amount) {
-    print('[\$owner] \$type: \${amount.toStringAsFixed(2)}');
-  }
 }
 
-// In another file (different library):
-// var acct = BankAccount('Alice', 100);
-// acct._balance = 999999; // COMPILE ERROR
-// acct.balance;           // OK — public getter
-// acct.deposit(50);       // OK — public method''',
+// From another file:
+// acct._balance = 999; // COMPILE ERROR
+// acct.balance;        // OK - public getter''',
               ),
             ),
           ),
@@ -350,7 +312,7 @@ class _ComparisonFrame extends StatelessWidget {
                   granularity: 'Class-level',
                   notes: [
                     'private, protected, public, package',
-                    'Verbose — must annotate every member',
+                    'Verbose - must annotate every member',
                     'private in same class; package for library',
                     'Enforced strictly by the compiler',
                   ],
@@ -369,7 +331,7 @@ public double getBalance() {
                   notes: [
                     '_name: "please don\'t touch"',
                     '__name: name mangling (weak protection)',
-                    'Nothing is truly private — duck typing',
+                    'Nothing is truly private - duck typing',
                     'Relies on developer discipline',
                   ],
                   code: '''self._balance = 0  # soft private
@@ -385,7 +347,7 @@ self.__balance = 0 # name mangled
                   granularity: 'Library-level',
                   notes: [
                     'Simple: just prefix with _',
-                    'Enforced by the compiler — not convention',
+                    'Enforced by the compiler - not convention',
                     'Private to the whole file, not just the class',
                     'No modifiers, no verbosity',
                   ],

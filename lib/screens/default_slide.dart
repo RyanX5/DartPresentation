@@ -141,9 +141,11 @@ class _DefaultSlideState extends State<DefaultSlide> {
               ),
             ),
 
-            _AnimatedSlideItem(
-              key: ValueKey(_currentIndex),
-              child: _slides[_currentIndex],
+            ClipRect(
+              child: _AnimatedSlideItem(
+                key: ValueKey(_currentIndex),
+                child: _slides[_currentIndex],
+              ),
             ),
 
             if (_movedToCorner)

@@ -84,34 +84,18 @@ class _ValueRefFrame extends StatelessWidget {
               delay: 300,
               child: CodeDisplay(
                 fontSize: 14,
-                code: '''// VALUE SEMANTICS (primitives)
-int a = 10;
-int b = a;    // copy of value
+                code: '''// Primitives: copied
+int a = 10, b = a;
 b = 99;
-print(a);     // 10 — unaffected
+print(a); // 10 - unaffected
 
-// Strings are value-like (immutable)
-String s1 = 'hello';
-String s2 = s1;
-// s2 still points to the same interned string
-// but you cannot mutate a String in Dart
-
-// REFERENCE SEMANTICS (objects/collections)
-List<int> list1 = [1, 2, 3];
-List<int> list2 = list1; // same reference!
+// Objects: shared reference
+var list1 = [1, 2, 3];
+var list2 = list1;
 list2.add(4);
-print(list1); // [1, 2, 3, 4] — both changed!
+print(list1); // [1, 2, 3, 4]!
 
-// To copy a list:
-List<int> list3 = List.from(list1); // deep copy
-List<int> list4 = [...list1];       // spread copy
-
-// Object references
-class Point { int x, y; Point(this.x, this.y); }
-var p1 = Point(1, 2);
-var p2 = p1; // same object
-p2.x = 99;
-print(p1.x); // 99 — same object!''',
+var copy = [...list1]; // explicit copy''',
               ),
             ),
           ),
@@ -177,38 +161,22 @@ class _GenericsFrame extends StatelessWidget {
               delay: 200,
               child: CodeDisplay(
                 fontSize: 14,
-                code: '''// Generic class — type parameter T
-class Box<T> {
+                code: '''class Box<T> {
   T value;
   Box(this.value);
-
-  T getValue() => value;
-
-  @override
-  String toString() => 'Box<\$T>(\$value)';
 }
 
-void main() {
-  var intBox = Box<int>(42);
-  var strBox = Box<String>('hello');
+var intBox = Box<int>(42);
+var strBox = Box<String>('hi');
 
-  print(intBox.getValue()); // 42
-  print(strBox);            // Box<String>(hello)
+List<String> names = ['Alice', 'Bob'];
+// names.add(42); // COMPILE ERROR
 
-  // Type-safe collections
-  List<String> names = ['Alice', 'Bob'];
-  // names.add(42); // COMPILE ERROR — not a String
+T first<T>(List<T> items) => items[0];
+print(first([10, 20, 30])); // 10
 
-  // Generic function
-  T first<T>(List<T> items) => items[0];
-  print(first<int>([10, 20, 30]));    // 10
-  print(first<String>(['a', 'b']));   // a
-
-  // Bounded generics
-  // Only types that extend num (int, double)
-  double sum<T extends num>(List<T> items) =>
-      items.fold(0.0, (acc, e) => acc + e);
-}''',
+double sum<T extends num>(List<T> list) =>
+    list.fold(0.0, (a, e) => a + e);''',
               ),
             ),
           ),
@@ -234,13 +202,13 @@ void main() {
                 ),
                 const SizedBox(height: 32),
                 AnimatedFadeUp(delay: 400, child: _GenPoint(Icons.widgets, AppColors.dartBlue,
-                    'Generic classes', 'Box<T> works with int, String, or any type — type-checked at compile time.')),
+                    'Generic classes', 'Box<T> works with int, String, or any type - type-checked at compile time.')),
                 const SizedBox(height: 16),
                 AnimatedFadeUp(delay: 550, child: _GenPoint(Icons.functions, Colors.orangeAccent,
                     'Generic functions', 'Functions can have their own type parameters, inferred from arguments.')),
                 const SizedBox(height: 16),
                 AnimatedFadeUp(delay: 700, child: _GenPoint(Icons.fence, const Color(0xFF7C4DFF),
-                    'Bounded type params', '<T extends num> constrains T to numeric types — gives access to arithmetic operators.')),
+                    'Bounded type params', '<T extends num> constrains T to numeric types - gives access to arithmetic operators.')),
                 const SizedBox(height: 24),
                 AnimatedFadeUp(
                   delay: 850,
@@ -252,7 +220,7 @@ void main() {
                       border: Border.all(color: Colors.white.withAlpha(20)),
                     ),
                     child: const Text(
-                      'Unlike Java, Dart generics are reified at runtime — you can actually check List<int> vs List<String> with is.',
+                      'Unlike Java, Dart generics are reified at runtime - you can actually check List<int> vs List<String> with is.',
                       style: TextStyle(color: Colors.white60, fontSize: 13, height: 1.5),
                     ),
                   ),
@@ -326,7 +294,7 @@ class _DartIoFrame extends StatelessWidget {
                     'HTTP client/server', 'dart:io provides low-level HTTP. Use the http package for higher-level.')),
                 const SizedBox(height: 16),
                 AnimatedFadeUp(delay: 850, child: _IoFeature(Icons.warning, const Color(0xFFFF6B6B),
-                    'Desktop/server only', 'dart:io is not available on Flutter web — use dart:html or packages instead.')),
+                    'Desktop/server only', 'dart:io is not available on Flutter web - use dart:html or packages instead.')),
               ],
             ),
           ),
@@ -339,36 +307,28 @@ class _DartIoFrame extends StatelessWidget {
                 fontSize: 14,
                 code: """import 'dart:io';
 
-// Synchronous file read
-void readSync(String path) {
-  final file = File(path);
-  final content = file.readAsStringSync();
-  print(content);
-}
+// Synchronous read
+String readSync(String path) =>
+    File(path).readAsStringSync();
 
-// Asynchronous file read (preferred)
-Future<void> readAsync(String path) async {
-  final file = File(path);
-  final content = await file.readAsString();
-  print(content);
-}
+// Async read (preferred)
+Future<String> readAsync(String path) async =>
+    await File(path).readAsString();
 
-// Write to a file
-void write(String path, String data) {
-  File(path).writeAsStringSync(data);
-}
+// Write
+void write(String path, String data) =>
+    File(path).writeAsStringSync(data);
 
-// List files in a directory
+// List a directory
 void listDir(String path) {
-  final dir = Directory(path);
-  for (var entity in dir.listSync()) {
-    print(entity.path);
+  for (var e in Directory(path).listSync()) {
+    print(e.path);
   }
 }
 
 void main() async {
   write('/tmp/test.txt', 'Hello Dart!');
-  await readAsync('/tmp/test.txt');
+  print(await readAsync('/tmp/test.txt'));
 }""",
               ),
             ),

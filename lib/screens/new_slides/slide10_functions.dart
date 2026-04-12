@@ -79,7 +79,7 @@ class _PassingFrame extends StatelessWidget {
                       border: Border.all(color: Colors.greenAccent.withAlpha(50)),
                     ),
                     child: const Text(
-                      'This is the same model used by Java and Python — not pure pass-by-value (C) or pure pass-by-reference (C++).',
+                      'This is the same model used by Java and Python - not pure pass-by-value (C) or pure pass-by-reference (C++).',
                       style: TextStyle(color: Colors.white60, fontSize: 13, height: 1.5),
                     ),
                   ),
@@ -94,38 +94,19 @@ class _PassingFrame extends StatelessWidget {
               delay: 300,
               child: CodeDisplay(
                 fontSize: 14,
-                code: '''// Primitives: pass by value (copy)
-void increment(int x) {
-  x += 1; // only changes the local copy
-}
+                code: '''// Primitives: copied
+void increment(int x) { x += 1; }
+int n = 5;
+increment(n);
+print(n); // 5 - unchanged
 
-void main() {
-  int num = 5;
-  increment(num);
-  print(num); // still 5 — no change!
-}
+// Objects: reference shared
+class Counter { int value = 0; }
+void addTen(Counter c) { c.value += 10; }
 
-// Objects: reference is copied
-class Counter {
-  int value = 0;
-}
-
-void addTen(Counter c) {
-  c.value += 10; // mutates the actual object
-}
-
-void main2() {
-  var counter = Counter();
-  addTen(counter);
-  print(counter.value); // 10 — object was mutated!
-}
-
-// Lists: same — reference semantics
-void doubleList(List<int> nums) {
-  for (int i = 0; i < nums.length; i++) {
-    nums[i] *= 2; // mutates original list!
-  }
-}''',
+var c = Counter();
+addTen(c);
+print(c.value); // 10 - mutated''',
               ),
             ),
           ),
@@ -152,36 +133,19 @@ class _ParamsFrame extends StatelessWidget {
               delay: 200,
               child: CodeDisplay(
                 fontSize: 14,
-                code: '''// NAMED PARAMETERS — wrapped in {}
-// caller must use the name, order doesn't matter
-void createUser({
-  required String name,
-  int age = 18,        // default value
-  String? email,       // optional (nullable)
-}) {
+                code: '''// Named parameters {}
+void createUser({required String name, int age = 18, String? email}) {
   print('\$name, \$age, \${email ?? "no email"}');
 }
+createUser(name: 'Alice', age: 25);
+createUser(name: 'Bob'); // age = 18
 
-createUser(name: 'Alice', age: 25, email: 'a@b.com');
-createUser(name: 'Bob'); // age defaults to 18
+// Optional positional []
+String greet(String name, [String? title]) =>
+    title != null ? '\$title \$name' : name;
 
-// OPTIONAL POSITIONAL — wrapped in []
-// caller provides by position, all optional
-String greet(String name, [String? title]) {
-  return title != null ? '\$title \$name' : name;
-}
-
-print(greet('Alice'));          // Alice
-print(greet('Alice', 'Dr.'));   // Dr. Alice
-
-// MIXED (required positional + named optional)
-void log(String message, {bool verbose = false}) {
-  if (verbose) print('[VERBOSE] \$message');
-  else print(message);
-}
-
-log('Hello');                    // Hello
-log('Debug info', verbose: true); // [VERBOSE] Debug info''',
+print(greet('Alice'));        // Alice
+print(greet('Alice', 'Dr.')); // Dr. Alice''',
               ),
             ),
           ),
@@ -210,7 +174,7 @@ log('Debug info', verbose: true); // [VERBOSE] Debug info''',
                     'Named required', 'Must be passed by name. Order doesn\'t matter at the call site.')),
                 const SizedBox(height: 14),
                 AnimatedFadeUp(delay: 550, child: _ParamBox('{ T param = default }', Colors.greenAccent,
-                    'Named with default', 'Optional — uses default if not provided.')),
+                    'Named with default', 'Optional - uses default if not provided.')),
                 const SizedBox(height: 14),
                 AnimatedFadeUp(delay: 700, child: _ParamBox('[ T? param ]', Colors.orangeAccent,
                     'Optional positional', 'Provided by position but not required. Null if omitted.')),
@@ -225,7 +189,7 @@ log('Debug info', verbose: true); // [VERBOSE] Debug info''',
                       border: Border.all(color: AppColors.dartBlue.withAlpha(50)),
                     ),
                     child: const Text(
-                      'In Flutter, virtually every Widget uses named parameters — that\'s why Dart\'s named param syntax is so central to the ecosystem.',
+                      'In Flutter, virtually every Widget uses named parameters - that\'s why Dart\'s named param syntax is so central to the ecosystem.',
                       style: TextStyle(color: Colors.white60, fontSize: 13, height: 1.5),
                     ),
                   ),
@@ -303,24 +267,15 @@ class _ComparisonFrame extends StatelessWidget {
                     child: _LangBlock(
                       lang: 'Java',
                       color: Colors.orangeAccent,
-                      code: '''// Java: no optional params
-// Must overload for each combination
-void connect(String host) {
-  connect(host, 80);
-}
-
+                      code: '''// Java: overload for each combo
+void connect(String host) { connect(host, 80); }
 void connect(String host, int port) {
-  connect(host, port, false);
+    connect(host, port, false);
 }
-
-void connect(String host, int port,
-             boolean ssl) {
-  // actual implementation
+void connect(String host, int port, boolean ssl) {
+    // implementation
 }
-
-// Caller — must match exact signature
 connect("example.com");
-connect("example.com", 443);
 connect("example.com", 443, true);''',
                     ),
                   ),
@@ -337,7 +292,7 @@ def connect(host, port=80, ssl=False):
     # actual implementation
     pass
 
-# Caller — very flexible
+# Caller - very flexible
 connect("example.com")
 connect("example.com", 443)
 connect("example.com", ssl=True)
@@ -362,7 +317,7 @@ void connect(
   // actual implementation
 }
 
-// Caller — flexible, self-documenting
+// Caller - flexible, self-documenting
 connect('example.com');
 connect('example.com', port: 443);
 connect('example.com',

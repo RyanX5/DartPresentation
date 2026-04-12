@@ -43,7 +43,7 @@ class _PrimitivesFrame extends StatelessWidget {
           AnimatedFadeUp(
             delay: 200,
             child: const Text(
-              'Everything in Dart is an object — even primitives.',
+              'Everything in Dart is an object - even primitives.',
               style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w800),
             ),
           ),
@@ -56,7 +56,7 @@ class _PrimitivesFrame extends StatelessWidget {
                 color: AppColors.dartBlue,
                 desc: '64-bit integer on native, limited to 53-bit precision on web (JS).',
                 examples: 'int x = 42;\nint hex = 0xFF;\nint big = 1000000;',
-                note: 'No int32/int64 distinction — just int.',
+                note: 'No int32/int64 distinction - just int.',
               ))),
               const SizedBox(width: 20),
               Expanded(child: AnimatedFadeUp(delay: 450, child: _PrimCard(
@@ -72,7 +72,7 @@ class _PrimitivesFrame extends StatelessWidget {
                 color: Colors.orangeAccent,
                 desc: 'UTF-16 encoded sequence of characters. Immutable.',
                 examples: "String s = 'Hi';\nString t = \"World\";\nvar msg = '\$s \$t';",
-                note: 'String interpolation with \$ — no concatenation needed.',
+                note: 'String interpolation with \$ - no concatenation needed.',
               ))),
               const SizedBox(width: 20),
               Expanded(child: AnimatedFadeUp(delay: 750, child: _PrimCard(
@@ -80,7 +80,7 @@ class _PrimitivesFrame extends StatelessWidget {
                 color: Colors.greenAccent,
                 desc: 'Strictly true or false. No truthy/falsy values.',
                 examples: 'bool ok = true;\nbool done = false;\n// 1, 0, null → not bool!',
-                note: 'Only ever true or false — unlike JS/Python.',
+                note: 'Only ever true or false - unlike JS/Python.',
               ))),
             ],
           ),
@@ -146,29 +146,22 @@ class _CompositesFrame extends StatelessWidget {
               delay: 200,
               child: CodeDisplay(
                 fontSize: 14,
-                code: '''// LIST — ordered, allows duplicates (like array)
+                code: '''// List - ordered, indexed
 List<int> nums = [10, 20, 30];
 nums.add(40);
-print(nums[0]);    // 10
-print(nums.length); // 4
+print(nums[0]); // 10
 
-// Spread & collection-if
-var bonus = [99];
-var all = [...nums, ...bonus]; // [10, 20, 30, 40, 99]
+// Spread to combine
+var all = [...nums, 99]; // [10, 20, 30, 40, 99]
 
-// SET — unordered, unique values
-Set<String> tags = {'dart', 'flutter', 'mobile'};
-tags.add('dart'); // duplicate — ignored
-print(tags.length); // still 3
+// Set - unique values only
+Set<String> tags = {'dart', 'flutter'};
+tags.add('dart'); // ignored - already exists
 
-// MAP — key-value pairs (like Python dict)
-Map<String, int> scores = {
-  'Alice': 95,
-  'Bob': 82,
-};
-scores['Charlie'] = 78;
-print(scores['Alice']);     // 95
-print(scores['Unknown']);   // null (key missing)''',
+// Map - key/value
+Map<String, int> scores = {'Alice': 95, 'Bob': 82};
+print(scores['Alice']);   // 95
+print(scores['unknown']); // null''',
               ),
             ),
           ),
@@ -188,7 +181,7 @@ print(scores['Unknown']);   // null (key missing)''',
                 AnimatedFadeUp(
                   delay: 250,
                   child: const Text(
-                    'Built-in collection types — generic and type-safe.',
+                    'Built-in collection types - generic and type-safe.',
                     style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w800, height: 1.3),
                   ),
                 ),
@@ -253,7 +246,7 @@ class _CollType extends StatelessWidget {
   }
 }
 
-// ── Frame 3: Quiz — RangeError ────────────────────────────────────────────────
+// ── Frame 3: Quiz - RangeError ────────────────────────────────────────────────
 
 class _QuizFrame extends StatefulWidget {
   const _QuizFrame();
@@ -353,7 +346,7 @@ print(nums[2]);''',
                                   style: TextStyle(color: Color(0xFFFF6B6B), fontSize: 20, fontWeight: FontWeight.bold)),
                               const SizedBox(height: 8),
                               Text(
-                                'The list has 2 elements at indices 0 and 1. Index 2 does not exist.\n\nDart uses 0-based indexing — just like Java, C, and Python. Accessing an invalid index throws a RangeError at runtime.',
+                                'The list has 2 elements at indices 0 and 1. Index 2 does not exist.\n\nDart uses 0-based indexing - just like Java, C, and Python. Accessing an invalid index throws a RangeError at runtime.',
                                 style: TextStyle(color: Colors.white.withAlpha(180), fontSize: 15, height: 1.6),
                               ),
                             ],

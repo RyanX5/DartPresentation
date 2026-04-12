@@ -98,7 +98,7 @@ class _SummaryFrame extends StatelessWidget {
                       icon: Icons.sync_alt,
                       color: const Color(0xFFFF6B6B),
                       title: 'One Language, Six Platforms',
-                      desc: 'Mobile, web, desktop, server — all from a single Dart codebase with Flutter.',
+                      desc: 'Mobile, web, desktop, server - all from a single Dart codebase with Flutter.',
                     )),
                   ],
                 ),
@@ -189,7 +189,7 @@ class _FinalThoughtFrame extends StatelessWidget {
               child: SizedBox(
                 width: 700,
                 child: Text(
-                  'Dart successfully blends the strict type-safety and object-orientation of Java with the conciseness and developer-friendly features of Python — and adds unique capabilities like sound null safety, isolates, and dual compilation that neither language has.',
+                  'Dart successfully blends the strict type-safety and object-orientation of Java with the conciseness and developer-friendly features of Python - and adds unique capabilities like sound null safety, isolates, and dual compilation that neither language has.',
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.white.withAlpha(160), fontSize: 18, height: 1.7),
                 ),
@@ -293,7 +293,7 @@ class _QAFrame extends StatelessWidget {
             AnimatedFadeUp(
               delay: 300,
               child: Text(
-                'The floor is open — feel free to ask anything.',
+                'The floor is open - feel free to ask anything.',
                 style: TextStyle(color: Colors.white.withAlpha(150), fontSize: 22, fontWeight: FontWeight.w300),
               ),
             ),

@@ -64,7 +64,7 @@ class _EverythingObjectFrame extends StatelessWidget {
                 AnimatedFadeUp(delay: 500, child: _ObjRow('42', 'int', '.isEven, .abs(), .toString()')),
                 AnimatedFadeUp(delay: 600, child: _ObjRow('3.14', 'double', '.ceil(), .floor(), .isNaN')),
                 AnimatedFadeUp(delay: 700, child: _ObjRow('"hello"', 'String', '.length, .toUpperCase(), .split()')),
-                AnimatedFadeUp(delay: 800, child: _ObjRow('true', 'bool', '.toString() — all objects have this')),
+                AnimatedFadeUp(delay: 800, child: _ObjRow('true', 'bool', '.toString() - all objects have this')),
                 AnimatedFadeUp(delay: 900, child: _ObjRow('(x) => x', 'Function', '.call(), .toString(), runtimeType')),
                 AnimatedFadeUp(delay: 1000, child: _ObjRow('null', 'Null', 'null is an object of type Null')),
               ],
@@ -79,30 +79,22 @@ class _EverythingObjectFrame extends StatelessWidget {
                 fontSize: 14,
                 code: '''// Everything inherits from Object
 int x = 42;
-print(x.runtimeType);     // int
-print(x is Object);       // true!
-print(x.toString());      // "42"
+print(x.runtimeType); // int
+print(x is Object);   // true!
 
 // Integers have methods
-print(42.isEven);         // true
-print((-7).abs());        // 7
-print(255.toRadixString(16)); // ff
+print(42.isEven);     // true
+print((-7).abs());    // 7
 
 // Strings have methods
 String s = 'hello dart';
-print(s.length);          // 10
-print(s.toUpperCase());   // HELLO DART
-print(s.contains('dart')); // true
-print(s.split(' '));       // [hello, dart]
+print(s.length);      // 10
+print(s.toUpperCase()); // HELLO DART
 
-// Functions are objects too
+// Functions are objects
 var fn = (int x) => x * 2;
-print(fn.runtimeType);    // (int) => int
-print(fn(5));             // 10
-
-// null is an object
-print(null.runtimeType);  // Null
-print(null is Object?);   // true''',
+print(fn.runtimeType); // (int) => int
+print(fn(5));          // 10''',
               ),
             ),
           ),
@@ -141,7 +133,7 @@ class _ObjRow extends StatelessWidget {
   }
 }
 
-// ── Frame 2: Syntactic Sugar — Constructor ─────────────────────────────────────
+// ── Frame 2: Syntactic Sugar - Constructor ─────────────────────────────────────
 
 class _SyntacticSugarFrame extends StatelessWidget {
   const _SyntacticSugarFrame();
@@ -159,45 +151,23 @@ class _SyntacticSugarFrame extends StatelessWidget {
               child: CodeDisplay(
                 fontSize: 14,
                 code: '''class Point {
-  final double x;
-  final double y;
-
-  // Initializing formal — this.x auto-assigns
-  const Point(this.x, this.y);
-
-  // Named constructor
-  Point.origin() : this(0, 0);
-
-  // Named constructor from JSON
-  Point.fromJson(Map<String, double> json)
-      : x = json['x']!,
-        y = json['y']!;
-
-  // Computed getter
-  double get distanceToOrigin =>
-      (x * x + y * y);
-
-  @override
-  String toString() => 'Point(\$x, \$y)';
+  final double x, y;
+  const Point(this.x, this.y); // auto-assigns
+  Point.origin() : this(0, 0); // named ctor
+  double get magnitude => x * x + y * y;
+  @override String toString() => 'Point(\$x, \$y)';
 }
 
 class Circle extends Point {
   final double radius;
-
-  // Passes x, y to parent constructor
   Circle(super.x, super.y, this.radius);
-
   double get area => 3.14159 * radius * radius;
 }
 
-void main() {
-  var p = Point(3.0, 4.0);
-  var origin = Point.origin();
-  var c = Circle(0, 0, 5);
-
-  print(p);                // Point(3.0, 4.0)
-  print(c.area);           // 78.53...
-}''',
+var p = Point(3.0, 4.0);
+var c = Circle(0, 0, 5);
+print(p.magnitude); // 25.0
+print(c.area);      // 78.53...''',
               ),
             ),
           ),
@@ -223,16 +193,16 @@ void main() {
                 ),
                 const SizedBox(height: 32),
                 AnimatedFadeUp(delay: 400, child: _SugarBox('this.x in constructor', AppColors.dartBlue,
-                    'Automatically assigns the argument to the field — no manual this.x = x needed.')),
+                    'Automatically assigns the argument to the field - no manual this.x = x needed.')),
                 const SizedBox(height: 14),
                 AnimatedFadeUp(delay: 550, child: _SugarBox('Named constructors', Colors.orangeAccent,
                     'Multiple factory patterns in one class: Point.origin(), Point.fromJson(), etc.')),
                 const SizedBox(height: 14),
                 AnimatedFadeUp(delay: 700, child: _SugarBox('get (getters)', const Color(0xFF7C4DFF),
-                    'Computed properties accessed like fields — no parentheses needed at call site.')),
+                    'Computed properties accessed like fields - no parentheses needed at call site.')),
                 const SizedBox(height: 14),
                 AnimatedFadeUp(delay: 850, child: _SugarBox('super.x shorthand', Colors.greenAccent,
-                    'Pass fields to the parent constructor directly — Circle(super.x, super.y, this.radius).')),
+                    'Pass fields to the parent constructor directly - Circle(super.x, super.y, this.radius).')),
               ],
             ),
           ),
@@ -269,7 +239,7 @@ class _SugarBox extends StatelessWidget {
   }
 }
 
-// ── Frame 3: Java Comparison — Constructors ────────────────────────────────────
+// ── Frame 3: Java Comparison - Constructors ────────────────────────────────────
 
 class _JavaCompareFrame extends StatelessWidget {
   const _JavaCompareFrame();
@@ -289,7 +259,7 @@ class _JavaCompareFrame extends StatelessWidget {
           AnimatedFadeUp(
             delay: 200,
             child: const Text(
-              'The same class in Java vs Dart — notice the difference in boilerplate.',
+              'The same class in Java vs Dart - notice the difference in boilerplate.',
               style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w700),
             ),
           ),
@@ -305,26 +275,15 @@ class _JavaCompareFrame extends StatelessWidget {
                       lang: 'Java',
                       color: Colors.orangeAccent,
                       code: '''class Point {
-    private final double x;
-    private final double y;
-
-    // Constructor: manual assignment
+    private final double x, y;
     public Point(double x, double y) {
-        this.x = x;
-        this.y = y;
+        this.x = x; this.y = y;
     }
-
-    // Getters: required for encapsulation
     public double getX() { return x; }
-    public double getY() { return y; }
-
-    @Override
     public String toString() {
         return "Point(" + x + ", " + y + ")";
     }
 }
-
-// Usage
 Point p = new Point(3.0, 4.0);
 System.out.println(p.getX()); // 3.0''',
                     ),
@@ -338,23 +297,15 @@ System.out.println(p.getX()); // 3.0''',
                       lang: 'Dart',
                       color: AppColors.dartCyan,
                       code: '''class Point {
-  final double x;
-  final double y;
-
-  // this.x auto-assigns — no body needed
-  const Point(this.x, this.y);
-
-  // getter: accessed as property
+  final double x, y;
+  const Point(this.x, this.y); // auto-assigns!
   double get magnitude => x * x + y * y;
-
-  @override
-  String toString() => 'Point(\$x, \$y)';
+  @override String toString() => 'Point(\$x, \$y)';
 }
 
-// Usage
 var p = Point(3.0, 4.0);
-print(p.x);         // 3.0 (direct access)
-print(p.magnitude); // 25.0 (no parentheses)
+print(p.x);         // 3.0 (direct)
+print(p.magnitude); // 25.0 (no parens!)
 print(p);           // Point(3.0, 4.0)''',
                     ),
                   ),

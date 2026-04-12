@@ -48,7 +48,7 @@ class _FirstClassFrame extends StatelessWidget {
                 AnimatedFadeUp(
                   delay: 250,
                   child: const Text(
-                    'In Dart, functions are objects — they can be stored, passed, and returned like any value.',
+                    'In Dart, functions are objects - they can be stored, passed, and returned like any value.',
                     style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w700, height: 1.3),
                   ),
                 ),
@@ -64,7 +64,7 @@ class _FirstClassFrame extends StatelessWidget {
                   icon: Icons.input,
                   color: Colors.orangeAccent,
                   title: 'Pass as arguments',
-                  desc: '[1,2,3].forEach(print) — pass print itself.',
+                  desc: '[1,2,3].forEach(print) - pass print itself.',
                 )),
                 const SizedBox(height: 16),
                 AnimatedFadeUp(delay: 700, child: _FnPoint(
@@ -90,38 +90,18 @@ class _FirstClassFrame extends StatelessWidget {
               delay: 300,
               child: CodeDisplay(
                 fontSize: 14,
-                code: '''// Functions assigned to variables
+                code: '''// Assign to variable
 var greet = (String name) => 'Hello, \$name!';
 print(greet('Dart')); // Hello, Dart!
 
-// Functions as parameters (higher-order)
-int applyTwice(int Function(int) fn, int x) {
-  return fn(fn(x));
-}
+// Pass as argument
+int applyTwice(int Function(int) fn, int x) => fn(fn(x));
+print(applyTwice((x) => x * 2, 3)); // 12
 
-int double_(int x) => x * 2;
-print(applyTwice(double_, 3)); // 12
-
-// Functions returned from functions (closures)
-Function makeMultiplier(int factor) {
-  return (int x) => x * factor;
-}
-
+// Return from function (closure)
+Function makeMultiplier(int n) => (int x) => x * n;
 var triple = makeMultiplier(3);
-print(triple(5)); // 15
-
-// Store functions in a list
-List<int Function(int)> transforms = [
-  (x) => x + 1,
-  (x) => x * 2,
-  (x) => x - 3,
-];
-
-int value = 10;
-for (var fn in transforms) {
-  value = fn(value);
-}
-print(value); // ((10+1)*2)-3 = 19''',
+print(triple(5)); // 15''',
               ),
             ),
           ),
@@ -180,41 +160,19 @@ class _LambdaFrame extends StatelessWidget {
               delay: 200,
               child: CodeDisplay(
                 fontSize: 14,
-                code: '''// Full function syntax
-int add(int a, int b) {
-  return a + b;
-}
-
-// Arrow function (single expression)
-int add2(int a, int b) => a + b;
-
-// Anonymous function (lambda)
-var multiply = (int a, int b) => a * b;
+                code: '''var multiply = (int a, int b) => a * b;
 print(multiply(3, 4)); // 12
 
-// Type annotation on variable
-int Function(int, int) divide = (a, b) => a ~/ b;
+var nums = [1, 2, 3, 4, 5];
+var doubled = nums.map((e) => e * 2).toList(); // [2,4,6,8,10]
+var evens   = nums.where((e) => e.isEven).toList(); // [2,4]
+var total   = nums.reduce((a, b) => a + b); // 15
 
-// Immediately invoked
-var result = ((int x) => x * x)(5);
-print(result); // 25
-
-// In collection operations
-List<int> nums = [1, 2, 3, 4, 5];
-
-var doubled  = nums.map((e) => e * 2).toList();
-var evens    = nums.where((e) => e.isEven).toList();
-var total    = nums.reduce((acc, e) => acc + e);
-
-print(doubled); // [2, 4, 6, 8, 10]
-print(evens);   // [2, 4]
-print(total);   // 15
-
-// Closure — captures surrounding scope
+// Closure captures outer scope
 int counter = 0;
-var increment = () => counter++;
-increment(); increment(); increment();
-print(counter); // 3''',
+var inc = () => counter++;
+inc(); inc();
+print(counter); // 2''',
               ),
             ),
           ),
@@ -240,16 +198,16 @@ print(counter); // 3''',
                 ),
                 const SizedBox(height: 32),
                 AnimatedFadeUp(delay: 400, child: _SyntaxBox('(a, b) => a + b', AppColors.dartBlue,
-                    'Arrow function — one expression, implicit return.')),
+                    'Arrow function - one expression, implicit return.')),
                 const SizedBox(height: 12),
                 AnimatedFadeUp(delay: 500, child: _SyntaxBox('.map((e) => e * 2)', Colors.orangeAccent,
-                    'Transform every element — returns a lazy Iterable.')),
+                    'Transform every element - returns a lazy Iterable.')),
                 const SizedBox(height: 12),
                 AnimatedFadeUp(delay: 600, child: _SyntaxBox('.where((e) => e > 3)', const Color(0xFF7C4DFF),
-                    'Filter elements — keep only those matching the predicate.')),
+                    'Filter elements - keep only those matching the predicate.')),
                 const SizedBox(height: 12),
                 AnimatedFadeUp(delay: 700, child: _SyntaxBox('.reduce((a, b) => a + b)', Colors.greenAccent,
-                    'Fold elements into a single value — left-to-right.')),
+                    'Fold elements into a single value - left-to-right.')),
                 const SizedBox(height: 24),
                 AnimatedFadeUp(
                   delay: 850,
@@ -261,7 +219,7 @@ print(counter); // 3''',
                       border: Border.all(color: Colors.white.withAlpha(20)),
                     ),
                     child: const Text(
-                      'Closures capture variables from their enclosing scope by reference — the same model as JavaScript and Python.',
+                      'Closures capture variables from their enclosing scope by reference - the same model as JavaScript and Python.',
                       style: TextStyle(color: Colors.white60, fontSize: 13, height: 1.5),
                     ),
                   ),
@@ -302,7 +260,7 @@ class _SyntaxBox extends StatelessWidget {
   }
 }
 
-// ── Frame 3: Quiz — map().toList() ─────────────────────────────────────────────
+// ── Frame 3: Quiz - map().toList() ─────────────────────────────────────────────
 
 class _QuizFrame extends StatefulWidget {
   const _QuizFrame();
@@ -401,7 +359,7 @@ class _QuizFrameState extends State<_QuizFrame> {
                                   style: TextStyle(color: Colors.greenAccent, fontSize: 28, fontWeight: FontWeight.bold, fontFamily: 'monospace')),
                               const SizedBox(height: 8),
                               Text(
-                                '.map() applies the lambda (e) => e * 2 to each element: 1→2, 2→4, 3→6.\n\n.map() returns a lazy Iterable — calling .toList() materializes it into a concrete List<int>.',
+                                '.map() applies the lambda (e) => e * 2 to each element: 1→2, 2→4, 3→6.\n\n.map() returns a lazy Iterable - calling .toList() materializes it into a concrete List<int>.',
                                 style: TextStyle(color: Colors.white.withAlpha(180), fontSize: 15, height: 1.6),
                               ),
                             ],

@@ -11,7 +11,7 @@ class Slide03Domains extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultSlide(
       title: 'Application Domains',
-      subtitle: 'Where Dart lives — and its trade-offs.',
+      subtitle: 'Where Dart lives - and its trade-offs.',
       childrenSlides: [
         _DomainsFrame(),
         _AdvantagesFrame(),
@@ -59,7 +59,7 @@ class _DomainsFrameState extends State<_DomainsFrame> {
       'icon': Icons.dns,
       'color': Colors.greenAccent,
       'headline': 'Concurrency without locks',
-      'detail': 'Dart\'s Isolate model makes it ideal for microservices and CLI tools — concurrent without shared memory or race conditions.',
+      'detail': 'Dart\'s Isolate model makes it ideal for microservices and CLI tools - concurrent without shared memory or race conditions.',
       'tags': ['Isolates', 'dart:io', 'CLI tools', 'Microservices'],
     },
   };
@@ -228,7 +228,7 @@ class _AdvantagesFrame extends StatelessWidget {
                       icon: Icons.speed,
                       color: const Color(0xFF7C4DFF),
                       title: 'Fast Startup',
-                      desc: 'AOT-compiled Dart binaries start instantly — no VM warmup period like JVM-based languages.',
+                      desc: 'AOT-compiled Dart binaries start instantly - no VM warmup period like JVM-based languages.',
                     )),
                   ],
                 ),
@@ -350,7 +350,7 @@ class _DisadvantagesFrame extends StatelessWidget {
                             style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold)),
                         const SizedBox(height: 16),
                         Text(
-                          'If you\'re building a Flutter app, Dart is the obvious — and only — choice.\n\nFor backend or data science work, Python or Java will give you a much larger ecosystem and community.',
+                          'If you\'re building a Flutter app, Dart is the obvious - and only - choice.\n\nFor backend or data science work, Python or Java will give you a much larger ecosystem and community.',
                           style: TextStyle(color: Colors.white.withAlpha(160), fontSize: 15, height: 1.7),
                         ),
                       ],

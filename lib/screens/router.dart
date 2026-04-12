@@ -161,7 +161,7 @@ class _SlideRouterState extends State<SlideRouter> {
                 children: _slides,
               ),
 
-              // Slide counter — bottom right
+              // Slide counter - bottom right
               Positioned(
                 bottom: 24,
                 right: 32,
@@ -178,7 +178,7 @@ class _SlideRouterState extends State<SlideRouter> {
                 ),
               ),
 
-              // Keyboard toggle — bottom left
+              // Keyboard toggle - bottom left
               Positioned(
                 bottom: 16,
                 left: 24,
@@ -187,8 +187,8 @@ class _SlideRouterState extends State<SlideRouter> {
                   builder: (context, enabled, _) {
                     return Tooltip(
                       message: enabled
-                          ? 'Keyboard navigation ON — click to disable'
-                          : 'Keyboard navigation OFF — click to enable',
+                          ? 'Keyboard navigation ON - click to disable'
+                          : 'Keyboard navigation OFF - click to enable',
                       child: InkWell(
                         onTap: () {
                           keyboardEnabledNotifier.value = !enabled;

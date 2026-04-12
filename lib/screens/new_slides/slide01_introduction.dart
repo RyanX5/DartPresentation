@@ -13,10 +13,120 @@ class Slide01Introduction extends StatelessWidget {
       title: 'Introduction',
       subtitle: 'Demystifying Dart',
       childrenSlides: [
+        _SyncFrame(),
         _TitleFrame(),
         _GoalFrame(),
         _ExpectFrame(),
       ],
+    );
+  }
+}
+
+// ── Frame 0: Sync Frame ────────────────────────────────────────────────────────
+
+class _SyncFrame extends StatelessWidget {
+  const _SyncFrame();
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrapper(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AnimatedFadeUp(
+              delay: 100,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                decoration: BoxDecoration(
+                  color: AppColors.dartBlue.withAlpha(30),
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(color: AppColors.dartCyan.withAlpha(80)),
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.sync, color: AppColors.dartCyan, size: 18),
+                    SizedBox(width: 10),
+                    Text('FOLLOW ALONG', style: TextStyle(color: AppColors.dartCyan, fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 2)),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 48),
+            AnimatedFadeUp(
+              delay: 250,
+              child: ShaderMask(
+                shaderCallback: (bounds) => const LinearGradient(
+                  colors: [Colors.white, AppColors.dartCyan],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ).createShader(bounds),
+                child: const Text(
+                  'csci.duckdns.org',
+                  style: TextStyle(color: Colors.white, fontSize: 56, fontWeight: FontWeight.w900, letterSpacing: -1),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            AnimatedFadeUp(
+              delay: 400,
+              child: Text(
+                'Open in your browser to follow the slides in real time.',
+                style: TextStyle(color: Colors.white.withAlpha(160), fontSize: 20),
+              ),
+            ),
+            const SizedBox(height: 48),
+            AnimatedFadeUp(
+              delay: 600,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _SyncCard(Icons.sync, AppColors.dartBlue, 'Auto-synced',
+                      'Slides advance automatically as we present. No need to do anything.'),
+                  const SizedBox(width: 32),
+                  _SyncCard(Icons.devices, Colors.greenAccent, 'Any device',
+                      'Works on phones, tablets, and laptops. Just open the URL.'),
+                  const SizedBox(width: 32),
+                  _SyncCard(Icons.visibility, Colors.orangeAccent, 'Follow along',
+                      'Use it to read code snippets up close during the presentation.'),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SyncCard extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final String title;
+  final String desc;
+  const _SyncCard(this.icon, this.color, this.title, this.desc);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 220,
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: color.withAlpha(15),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color.withAlpha(60)),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: color, size: 32),
+          const SizedBox(height: 14),
+          Text(title, style: TextStyle(color: color, fontSize: 16, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          Text(desc, textAlign: TextAlign.center,
+              style: const TextStyle(color: AppColors.textSecondary, fontSize: 13, height: 1.4)),
+        ],
+      ),
     );
   }
 }
@@ -167,7 +277,7 @@ class _GoalFrame extends StatelessWidget {
                     icon: Icons.psychology,
                     color: const Color(0xFF7C4DFF),
                     title: 'Conceptual',
-                    desc: 'How Dart solves fundamental language design problems — type safety, concurrency, memory.',
+                    desc: 'How Dart solves fundamental language design problems: type safety, concurrency, memory.',
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -206,7 +316,7 @@ class _GoalFrame extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Dart is the engine behind Flutter — Google\'s UI toolkit used by millions of apps worldwide.',
+                      'Dart is the engine behind Flutter, Google\'s UI toolkit used by millions of apps worldwide.',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white.withAlpha(120), fontSize: 14, height: 1.5),
                     ),
@@ -281,7 +391,7 @@ class _ExpectFrame extends StatelessWidget {
           AnimatedFadeUp(
             delay: 200,
             child: Text(
-              'We look beyond feature lists — here\'s how we\'ll explore Dart:',
+              'We look beyond feature lists. Here\'s how we\'ll explore Dart:',
               style: TextStyle(color: Colors.white.withAlpha(150), fontSize: 20),
             ),
           ),
