@@ -17,20 +17,14 @@ cd "$SERVER_DIR"
 npm install --omit=dev
 
 echo "==> Restarting server..."
-if command -v pm2 &>/dev/null; then
-  pm2 describe "$APP_NAME" &>/dev/null \
-    && pm2 restart "$APP_NAME" \
-    || pm2 start server.js --name "$APP_NAME"
-  pm2 save
-  echo "==> Done. Managed by pm2."
-  echo "    pm2 logs $APP_NAME   -- view logs"
-  echo "    pm2 stop $APP_NAME   -- stop server"
-else
-  # Fallback: kill old process and restart with nohup
-  pkill -f "node server.js" 2>/dev/null || true
-  nohup node server.js > "$REPO_DIR/server.log" 2>&1 &
-  echo "==> Done. PID $! — logs at $REPO_DIR/server.log"
-fi
+# Kill existing screen session if running
+screen -S "$APP_NAME" -X quit 2>/dev/null || true
+
+# Start fresh screen session
+screen -dmS "$APP_NAME" bash -c "cd '$SERVER_DIR' && node server.js 2>&1 | tee '$REPO_DIR/server.log'"
+echo "==> Done. Running in screen session '$APP_NAME'."
+echo "    screen -r $APP_NAME     -- attach to view logs"
+echo "    screen -S $APP_NAME -X quit  -- stop server"
 
 echo ""
 echo "    Presentation:   http://<your-vps-ip>:3000"
