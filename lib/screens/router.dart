@@ -11,6 +11,9 @@ import 'package:dart_presentation/screens/supreme/supreme_slide4.dart';
 import 'package:dart_presentation/screens/supreme/supreme_slide5.dart';
 import 'package:dart_presentation/screens/supreme/supreme_slide6.dart';
 import 'package:dart_presentation/screens/thank_you_slide.dart';
+import 'package:dart_presentation/services/remote_state.dart';
+import 'package:dart_presentation/services/socket_service.dart';
+import 'package:dart_presentation/utils/theme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -67,13 +70,26 @@ class _SlideRouterState extends State<SlideRouter> {
   void initState() {
     super.initState();
     _focusNode.requestFocus();
+    initSocketService();
+    remoteGoToNotifier.addListener(_onRemoteState);
   }
 
   @override
   void dispose() {
+    remoteGoToNotifier.removeListener(_onRemoteState);
     _controller.dispose();
     _focusNode.dispose();
     super.dispose();
+  }
+
+  void _onRemoteState() {
+    final state = remoteGoToNotifier.value;
+    if (state == null) return;
+    final targetSlide = state.slide.clamp(0, _slides.length - 1);
+    if (targetSlide != _index) {
+      setState(() => _index = targetSlide);
+      _controller.jumpToPage(targetSlide);
+    }
   }
 
   void _next() {
@@ -109,6 +125,7 @@ class _SlideRouterState extends State<SlideRouter> {
         focusNode: _focusNode,
         autofocus: true,
         onKeyEvent: (event) {
+          if (!keyboardEnabledNotifier.value) return;
           if (event is KeyDownEvent) {
             if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
               _next();
@@ -125,6 +142,8 @@ class _SlideRouterState extends State<SlideRouter> {
                 physics: const NeverScrollableScrollPhysics(),
                 children: _slides,
               ),
+
+              // Slide counter — bottom right
               Positioned(
                 bottom: 24,
                 right: 32,
@@ -135,6 +154,71 @@ class _SlideRouterState extends State<SlideRouter> {
                     fontSize: 16,
                     fontStyle: FontStyle.italic,
                   ),
+                ),
+              ),
+
+              // Keyboard toggle — bottom left
+              Positioned(
+                bottom: 16,
+                left: 24,
+                child: ValueListenableBuilder<bool>(
+                  valueListenable: keyboardEnabledNotifier,
+                  builder: (context, enabled, _) {
+                    return Tooltip(
+                      message: enabled
+                          ? 'Keyboard navigation ON — click to disable'
+                          : 'Keyboard navigation OFF — click to enable',
+                      child: InkWell(
+                        onTap: () {
+                          keyboardEnabledNotifier.value = !enabled;
+                          // Re-request focus so keyboard still fires through the listener
+                          _focusNode.requestFocus();
+                        },
+                        borderRadius: BorderRadius.circular(8),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: enabled
+                                ? AppColors.dartBlue.withAlpha(30)
+                                : Colors.transparent,
+                            border: Border.all(
+                              color: enabled
+                                  ? AppColors.dartBlue.withAlpha(80)
+                                  : Colors.white.withAlpha(25),
+                              width: 1,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                enabled
+                                    ? Icons.keyboard
+                                    : Icons.keyboard_hide,
+                                size: 16,
+                                color: enabled
+                                    ? AppColors.dartCyan
+                                    : Colors.white.withAlpha(60),
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                enabled ? 'Keys ON' : 'Keys OFF',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: enabled
+                                      ? AppColors.dartCyan
+                                      : Colors.white.withAlpha(60),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
             ],

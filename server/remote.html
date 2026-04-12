@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Dart Presentation Remote</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: #060d14;
+      color: #e0e0e0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      gap: 32px;
+    }
+
+    .header {
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      background: linear-gradient(135deg, #fff 0%, #29b6f6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header p {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .status-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(30, 136, 229, 0.25);
+      border-radius: 16px;
+      padding: 20px 32px;
+      text-align: center;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .status-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 10px;
+    }
+
+    .status-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #29b6f6;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .status-sub {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.4);
+      margin-top: 4px;
+    }
+
+    .connection-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #f44336;
+      margin-right: 6px;
+      transition: background 0.3s;
+    }
+
+    .connection-dot.connected {
+      background: #4caf50;
+    }
+
+    .connection-status {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .nav-row {
+      display: flex;
+      gap: 16px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 16px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      letter-spacing: 0.03em;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .btn:active {
+      transform: scale(0.95);
+      opacity: 0.85;
+    }
+
+    .btn-prev {
+      flex: 1;
+      padding: 22px 0;
+      background: rgba(30, 136, 229, 0.15);
+      color: #64b5f6;
+      border: 1px solid rgba(30, 136, 229, 0.3);
+    }
+
+    .btn-next {
+      flex: 2;
+      padding: 22px 0;
+      background: linear-gradient(135deg, #1e88e5 0%, #29b6f6 100%);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(30, 136, 229, 0.4);
+    }
+
+    .btn-reset {
+      width: 100%;
+      padding: 16px 0;
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.4);
+      border: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .btn-reset:active {
+      color: #f44336;
+      border-color: rgba(244, 67, 54, 0.4);
+    }
+
+    .icon {
+      font-size: 1.3rem;
+      line-height: 1;
+    }
+
+    .slide-names {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.2);
+      text-align: center;
+      max-width: 320px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>Dart Presentation</h1>
+    <p>Remote Control</p>
+  </div>
+
+  <div class="status-card">
+    <div class="status-label">Current Position</div>
+    <div class="status-value" id="position">— / —</div>
+    <div class="status-sub" id="slide-name">Connecting...</div>
+    <div class="connection-status">
+      <span class="connection-dot" id="dot"></span>
+      <span id="conn-label">Disconnected</span>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="nav-row">
+      <button class="btn btn-prev" id="btn-prev" ontouchstart="" onclick="sendEvent('previous')">
+        <span class="icon">◀</span>
+        Prev
+      </button>
+      <button class="btn btn-next" id="btn-next" ontouchstart="" onclick="sendEvent('next')">
+        Next
+        <span class="icon">▶</span>
+      </button>
+    </div>
+    <button class="btn btn-reset" ontouchstart="" onclick="sendEvent('reset')">
+      ↺ &nbsp; Reset to Start
+    </button>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const SLIDE_NAMES = [
+      'Cover',
+      'Background & Evolution',
+      'Syntax & Features',
+      'Names, Scopes & Bindings',
+      'Semantic Analysis',
+      'Demo (Rohan)',
+      'Control Flow & Execution',
+      'The Dart Type System',
+      'Data Abstraction & OOP',
+      'Subroutines & Functions',
+      'Unique Features',
+      'Demo (Supreme)',
+      'Thank You',
+    ];
+
+    const FRAME_COUNTS = [1, 4, 8, 7, 6, 1, 11, 12, 12, 10, 6, 1, 1];
+
+    const socket = io();
+
+    const posEl = document.getElementById('position');
+    const nameEl = document.getElementById('slide-name');
+    const dotEl = document.getElementById('dot');
+    const connEl = document.getElementById('conn-label');
+
+    function updateStatus(state) {
+      const slideNum = state.slide + 1;
+      const totalSlides = SLIDE_NAMES.length;
+      const frameNum = state.frame + 1;
+      const totalFrames = FRAME_COUNTS[state.slide];
+      posEl.textContent = `Slide ${slideNum} / ${totalSlides}`;
+      nameEl.textContent = `${SLIDE_NAMES[state.slide]}  ·  Frame ${frameNum} of ${totalFrames}`;
+    }
+
+    socket.on('connect', () => {
+      dotEl.classList.add('connected');
+      connEl.textContent = 'Connected';
+    });
+
+    socket.on('disconnect', () => {
+      dotEl.classList.remove('connected');
+      connEl.textContent = 'Disconnected';
+      posEl.textContent = '— / —';
+      nameEl.textContent = 'Reconnecting...';
+    });
+
+    socket.on('stateUpdate', (state) => {
+      updateStatus(state);
+    });
+
+    function sendEvent(event) {
+      socket.emit(event);
+    }
+  </script>
+</body>
+</html>
