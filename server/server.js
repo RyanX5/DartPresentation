@@ -7,9 +7,12 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// Frame counts per slide index (13 slides total):
-// [cover, rohan1, rohan2, rohan3, rohan4, rohan5, supreme1, supreme2, supreme3, supreme4, supreme5, supreme6, thankyou]
-const FRAME_COUNTS = [1, 4, 8, 7, 6, 1, 11, 12, 12, 10, 6, 1, 1];
+// Frame counts per slide index (22 slides total):
+// [cover, s01-intro, s02-background, s03-domains, s04-conditionals, s05-iteration,
+//  s06-operators, s07-types, s08-primitives, s09-generics, s10-functions,
+//  s11-lambdas, s12-advanced, s13-classes, s14-inheritance, s15-interfaces,
+//  s16-encapsulation, s17-concurrency, s18-compilation, s19-demo, s20-conclusion, thankyou]
+const FRAME_COUNTS = [1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1];
 
 let state = { slide: 0, frame: 0 };
 

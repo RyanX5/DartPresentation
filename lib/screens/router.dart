@@ -1,16 +1,25 @@
 import 'package:dart_presentation/screens/cover_slide.dart';
-import 'package:dart_presentation/screens/rohan/slide1.dart';
-import 'package:dart_presentation/screens/rohan/slide2.dart';
-import 'package:dart_presentation/screens/rohan/slide3.dart';
-import 'package:dart_presentation/screens/rohan/slide4.dart';
-import 'package:dart_presentation/screens/rohan/slide5.dart';
-import 'package:dart_presentation/screens/supreme/supreme_slide1.dart';
-import 'package:dart_presentation/screens/supreme/supreme_slide2.dart';
-import 'package:dart_presentation/screens/supreme/supreme_slide3.dart';
-import 'package:dart_presentation/screens/supreme/supreme_slide4.dart';
-import 'package:dart_presentation/screens/supreme/supreme_slide5.dart';
-import 'package:dart_presentation/screens/supreme/supreme_slide6.dart';
 import 'package:dart_presentation/screens/thank_you_slide.dart';
+import 'package:dart_presentation/screens/new_slides/slide01_introduction.dart';
+import 'package:dart_presentation/screens/new_slides/slide02_background.dart';
+import 'package:dart_presentation/screens/new_slides/slide03_domains.dart';
+import 'package:dart_presentation/screens/new_slides/slide04_conditionals.dart';
+import 'package:dart_presentation/screens/new_slides/slide05_iteration.dart';
+import 'package:dart_presentation/screens/new_slides/slide06_operators.dart';
+import 'package:dart_presentation/screens/new_slides/slide07_type_system.dart';
+import 'package:dart_presentation/screens/new_slides/slide08_primitives.dart';
+import 'package:dart_presentation/screens/new_slides/slide09_generics.dart';
+import 'package:dart_presentation/screens/new_slides/slide10_functions.dart';
+import 'package:dart_presentation/screens/new_slides/slide11_lambdas.dart';
+import 'package:dart_presentation/screens/new_slides/slide12_advanced_control.dart';
+import 'package:dart_presentation/screens/new_slides/slide13_classes.dart';
+import 'package:dart_presentation/screens/new_slides/slide14_inheritance.dart';
+import 'package:dart_presentation/screens/new_slides/slide15_interfaces.dart';
+import 'package:dart_presentation/screens/new_slides/slide16_encapsulation.dart';
+import 'package:dart_presentation/screens/new_slides/slide17_concurrency.dart';
+import 'package:dart_presentation/screens/new_slides/slide18_compilation.dart';
+import 'package:dart_presentation/screens/new_slides/slide19_demo.dart';
+import 'package:dart_presentation/screens/new_slides/slide20_conclusion.dart';
 import 'package:dart_presentation/services/remote_state.dart';
 import 'package:dart_presentation/services/socket_service.dart';
 import 'package:dart_presentation/utils/theme.dart';
@@ -52,17 +61,26 @@ class _SlideRouterState extends State<SlideRouter> {
 
   final List<Widget> _slides = [
     const CoverSlide(),
-    RohanSlide1(),
-    RohanSlide2(),
-    RohanSlide3(),
-    RohanSlide4(),
-    RohanSlide5(),
-    SupremeSlide1(),
-    SupremeSlide2(),
-    SupremeSlide3(),
-    SupremeSlide4(),
-    SupremeSlide5(),
-    SupremeSlide6(),
+    const Slide01Introduction(),
+    const Slide02Background(),
+    const Slide03Domains(),
+    const Slide04Conditionals(),
+    const Slide05Iteration(),
+    const Slide06Operators(),
+    const Slide07TypeSystem(),
+    const Slide08Primitives(),
+    const Slide09Generics(),
+    const Slide10Functions(),
+    const Slide11Lambdas(),
+    const Slide12AdvancedControl(),
+    const Slide13Classes(),
+    const Slide14Inheritance(),
+    const Slide15Interfaces(),
+    const Slide16Encapsulation(),
+    const Slide17Concurrency(),
+    const Slide18Compilation(),
+    const Slide19Demo(),
+    const Slide20Conclusion(),
     const ThankYouSlide(),
   ];
 
@@ -147,12 +165,15 @@ class _SlideRouterState extends State<SlideRouter> {
               Positioned(
                 bottom: 24,
                 right: 32,
-                child: Text(
-                  '${_index + 1} of ${_slides.length}',
-                  style: const TextStyle(
-                    color: Colors.black26,
-                    fontSize: 16,
-                    fontStyle: FontStyle.italic,
+                child: ValueListenableBuilder<int>(
+                  valueListenable: ValueNotifier(_index),
+                  builder: (_, __, ___) => Text(
+                    '${_index + 1} of ${_slides.length}',
+                    style: const TextStyle(
+                      color: Colors.black26,
+                      fontSize: 16,
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                 ),
               ),
@@ -171,7 +192,6 @@ class _SlideRouterState extends State<SlideRouter> {
                       child: InkWell(
                         onTap: () {
                           keyboardEnabledNotifier.value = !enabled;
-                          // Re-request focus so keyboard still fires through the listener
                           _focusNode.requestFocus();
                         },
                         borderRadius: BorderRadius.circular(8),

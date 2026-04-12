@@ -1,5 +1,4 @@
 import 'package:dart_presentation/screens/router.dart';
-import 'package:dart_presentation/screens/supreme/supreme_slide1.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
