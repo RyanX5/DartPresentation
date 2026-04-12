@@ -64,8 +64,8 @@ io.on('connection', (socket) => {
 });
 
 const PORT = 3000;
-server.listen(PORT, () => {
-  console.log(`\nDart Presentation Server running on port ${PORT}`);
-  console.log(`  Presentation:    http://localhost:${PORT}`);
-  console.log(`  Remote control:  http://localhost:${PORT}/remote\n`);
+server.listen(PORT, '127.0.0.1', () => {
+  console.log(`\nDart Presentation Server running on 127.0.0.1:${PORT}`);
+  console.log(`  Presentation:    http://127.0.0.1:${PORT}`);
+  console.log(`  Remote control:  http://127.0.0.1:${PORT}/remote\n`);
 });
