@@ -12,7 +12,7 @@ const io = new Server(server);
 //  s06-operators, s07-types, s08-primitives, s09-generics, s10-functions,
 //  s11-lambdas, s12-advanced, s13-classes, s14-inheritance, s15-interfaces,
 //  s16-encapsulation, s17-concurrency, s18-compilation, s19-demo, s20-conclusion, thankyou]
-const FRAME_COUNTS = [1, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1];
+const FRAME_COUNTS = [1, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1];
 
 let state = { slide: 0, frame: 0 };
 

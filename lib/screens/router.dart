@@ -178,63 +178,24 @@ class _SlideRouterState extends State<SlideRouter> {
                 ),
               ),
 
-              // Keyboard toggle - bottom left
+              // Keyboard toggle - discreet, bottom left
               Positioned(
-                bottom: 16,
-                left: 24,
+                bottom: 12,
+                left: 16,
                 child: ValueListenableBuilder<bool>(
                   valueListenable: keyboardEnabledNotifier,
                   builder: (context, enabled, _) {
-                    return Tooltip(
-                      message: enabled
-                          ? 'Keyboard navigation ON - click to disable'
-                          : 'Keyboard navigation OFF - click to enable',
-                      child: InkWell(
+                    return Opacity(
+                      opacity: enabled ? 0.15 : 0.08,
+                      child: GestureDetector(
                         onTap: () {
                           keyboardEnabledNotifier.value = !enabled;
                           _focusNode.requestFocus();
                         },
-                        borderRadius: BorderRadius.circular(8),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: enabled
-                                ? AppColors.dartBlue.withAlpha(30)
-                                : Colors.transparent,
-                            border: Border.all(
-                              color: enabled
-                                  ? AppColors.dartBlue.withAlpha(80)
-                                  : Colors.white.withAlpha(25),
-                              width: 1,
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                enabled
-                                    ? Icons.keyboard
-                                    : Icons.keyboard_hide,
-                                size: 16,
-                                color: enabled
-                                    ? AppColors.dartCyan
-                                    : Colors.white.withAlpha(60),
-                              ),
-                              const SizedBox(width: 6),
-                              Text(
-                                enabled ? 'Keys ON' : 'Keys OFF',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: enabled
-                                      ? AppColors.dartCyan
-                                      : Colors.white.withAlpha(60),
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
+                        child: Icon(
+                          enabled ? Icons.keyboard : Icons.keyboard_hide,
+                          size: 18,
+                          color: Colors.white,
                         ),
                       ),
                     );

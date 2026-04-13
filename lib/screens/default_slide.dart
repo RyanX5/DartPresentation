@@ -49,8 +49,8 @@ class _DefaultSlideState extends State<DefaultSlide> {
   void _onRemoteState() {
     final state = remoteGoToNotifier.value;
     if (state == null) return;
-    // frame + 1 because _slides[0] is the intro sentinel
-    final targetIndex = (state.frame + 1).clamp(1, widget.childrenSlides.length);
+    // frame 0 = title centered, frame N = content slide N
+    final targetIndex = state.frame.clamp(0, widget.childrenSlides.length);
     if (targetIndex != _currentIndex) {
       setState(() => _currentIndex = targetIndex);
     }
