@@ -22,7 +22,6 @@ import 'package:dart_presentation/screens/new_slides/slide19_demo.dart';
 import 'package:dart_presentation/screens/new_slides/slide20_conclusion.dart';
 import 'package:dart_presentation/services/remote_state.dart';
 import 'package:dart_presentation/services/socket_service.dart';
-import 'package:dart_presentation/utils/theme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -53,11 +52,14 @@ class SlideRouter extends StatefulWidget {
   State<SlideRouter> createState() => _SlideRouterState();
 }
 
+const _kCheatCode = 'dart';
+
 class _SlideRouterState extends State<SlideRouter> {
   final PageController _controller = PageController();
   final FocusNode _focusNode = FocusNode();
 
   int _index = 0;
+  final List<String> _keyBuffer = [];
 
   final List<Widget> _slides = [
     const CoverSlide(),
@@ -143,8 +145,21 @@ class _SlideRouterState extends State<SlideRouter> {
         focusNode: _focusNode,
         autofocus: true,
         onKeyEvent: (event) {
-          if (!keyboardEnabledNotifier.value) return;
           if (event is KeyDownEvent) {
+            // Cheat code detection (always active)
+            final char = event.character;
+            if (char != null) {
+              _keyBuffer.add(char);
+              if (_keyBuffer.length > _kCheatCode.length) {
+                _keyBuffer.removeAt(0);
+              }
+              if (_keyBuffer.join() == _kCheatCode) {
+                keyboardEnabledNotifier.value = !keyboardEnabledNotifier.value;
+                _keyBuffer.clear();
+              }
+            }
+
+            if (!keyboardEnabledNotifier.value) return;
             if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
               _next();
             } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
@@ -178,30 +193,6 @@ class _SlideRouterState extends State<SlideRouter> {
                 ),
               ),
 
-              // Keyboard toggle - discreet, bottom left
-              Positioned(
-                bottom: 12,
-                left: 16,
-                child: ValueListenableBuilder<bool>(
-                  valueListenable: keyboardEnabledNotifier,
-                  builder: (context, enabled, _) {
-                    return Opacity(
-                      opacity: enabled ? 0.15 : 0.08,
-                      child: GestureDetector(
-                        onTap: () {
-                          keyboardEnabledNotifier.value = !enabled;
-                          _focusNode.requestFocus();
-                        },
-                        child: Icon(
-                          enabled ? Icons.keyboard : Icons.keyboard_hide,
-                          size: 18,
-                          color: Colors.white,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
             ],
           ),
         ),
