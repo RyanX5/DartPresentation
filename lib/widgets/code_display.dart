@@ -192,7 +192,7 @@ class _ZoomButton extends StatelessWidget {
         child: Icon(
           icon,
           size: 13,
-          color: enabled ? Colors.white54 : Colors.white15,
+          color: enabled ? Colors.white54 : Colors.white12,
         ),
       ),
     );

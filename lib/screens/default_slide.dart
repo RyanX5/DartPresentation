@@ -1,3 +1,4 @@
+import 'package:dart_presentation/screens/router.dart';
 import 'package:dart_presentation/services/remote_state.dart';
 import 'package:dart_presentation/utils/theme.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +52,7 @@ class _DefaultSlideState extends State<DefaultSlide> {
     final state = remoteGoToNotifier.value;
     if (state == null) return;
     // Ignore events meant for other slides
-    final myIndex = _SlideIndex.of(context);
+    final myIndex = SlideIndex.of(context);
     if (state.slide != myIndex) return;
     // frame 0 = title centered, frame N = content slide N
     final targetIndex = state.frame.clamp(0, widget.childrenSlides.length);

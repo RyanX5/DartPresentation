@@ -26,15 +26,15 @@ import 'package:dart_presentation/services/socket_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class _SlideIndex extends InheritedWidget {
+class SlideIndex extends InheritedWidget {
   final int index;
-  const _SlideIndex({required this.index, required super.child});
+  const SlideIndex({required this.index, required super.child});
 
   static int of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<_SlideIndex>()!.index;
+      context.dependOnInheritedWidgetOfExactType<SlideIndex>()!.index;
 
   @override
-  bool updateShouldNotify(_SlideIndex old) => index != old.index;
+  bool updateShouldNotify(SlideIndex old) => index != old.index;
 }
 
 class SlideController extends InheritedWidget {
@@ -97,7 +97,7 @@ class _SlideRouterState extends State<SlideRouter> {
       const Slide20Conclusion(),
       const ThankYouSlide(),
     ].indexed)
-      _SlideIndex(index: i, child: slide),
+      SlideIndex(index: i, child: slide),
   ];
 
   @override
