@@ -63,7 +63,7 @@ io.on('connection', (socket) => {
   });
 });
 
-const PORT = 3000;
+const PORT = 8080;
 server.listen(PORT, '127.0.0.1', () => {
   console.log(`\nDart Presentation Server running on 127.0.0.1:${PORT}`);
   console.log(`  Presentation:    http://127.0.0.1:${PORT}`);

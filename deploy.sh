@@ -9,6 +9,9 @@ echo "==> Pulling latest from main..."
 cd "$REPO_DIR"
 git pull origin main
 
+echo "==> Caching Flutter web toolchain..."
+flutter precache --web
+
 echo "==> Building Flutter web..."
 flutter build web --release
 
