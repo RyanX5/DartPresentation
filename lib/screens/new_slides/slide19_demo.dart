@@ -4,6 +4,48 @@ import 'package:dart_presentation/widgets/animated_fade_up.dart';
 import 'package:dart_presentation/widgets/dartpad/dartpad_embed.dart';
 import 'package:dart_presentation/widgets/wrapper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+const _kHelloWorldCode = '''void greet({String greeting = 'Hello', String? name}) {
+  final who = name ?? 'World';
+  print('\$greeting, \$who!');
+}
+
+void main() {
+  var languages = ['Dart', 'Python', 'Java'];
+
+  for (var lang in languages) {
+    greet(name: lang);
+  }
+
+  String? nullableName = null;
+  greet(name: nullableName ?? 'Anonymous');
+}''';
+
+const _kFibonacciCode = '''class FibSequence {
+  final int limit;
+  FibSequence(this.limit);
+
+  static FibSequence upTo(int n) => FibSequence(n);
+
+  Iterable<int> get values sync* {
+    int a = 0, b = 1;
+    while (a <= limit) {
+      yield a;
+      final next = a + b;
+      a = b;
+      b = next;
+    }
+  }
+
+  int get sum => values.reduce((a, b) => a + b);
+}
+
+void main() {
+  final fib = FibSequence.upTo(34);
+  print(fib.values.join(', '));
+  print('Sum: \${fib.sum}');
+}''';
 
 class Slide19Demo extends StatelessWidget {
   const Slide19Demo({super.key});
@@ -182,6 +224,8 @@ class _HelloWorldFrame extends StatelessWidget {
                 AnimatedFadeUp(delay: 700, child: _Point(Colors.purpleAccent, 'Null coalescing', '?? provides a fallback for null values.')),
                 const SizedBox(height: 12),
                 AnimatedFadeUp(delay: 800, child: _Point(AppColors.dartCyan, 'Named params', 'greeting: \'Hello\' - self-documenting calls.')),
+                const SizedBox(height: 28),
+                AnimatedFadeUp(delay: 900, child: _CopyButton(code: _kHelloWorldCode)),
               ],
             ),
           ),
@@ -293,6 +337,8 @@ class _FibonacciFrame extends StatelessWidget {
                     ),
                   ),
                 ),
+                const SizedBox(height: 20),
+                AnimatedFadeUp(delay: 1000, child: _CopyButton(code: _kFibonacciCode)),
               ],
             ),
           ),
@@ -316,6 +362,57 @@ class _FibPoint extends StatelessWidget {
         const SizedBox(width: 8),
         Expanded(child: Text(text, style: TextStyle(color: color.withAlpha(200), fontSize: 14, height: 1.4))),
       ],
+    );
+  }
+}
+
+// ── Copy Button ────────────────────────────────────────────────────────────────
+
+class _CopyButton extends StatefulWidget {
+  final String code;
+  const _CopyButton({required this.code});
+
+  @override
+  State<_CopyButton> createState() => _CopyButtonState();
+}
+
+class _CopyButtonState extends State<_CopyButton> {
+  bool _copied = false;
+
+  Future<void> _copy() async {
+    await Clipboard.setData(ClipboardData(text: widget.code));
+    setState(() => _copied = true);
+    await Future.delayed(const Duration(seconds: 2));
+    if (mounted) setState(() => _copied = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      decoration: BoxDecoration(
+        color: _copied ? Colors.greenAccent.withAlpha(25) : AppColors.dartBlue.withAlpha(25),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: _copied ? Colors.greenAccent.withAlpha(100) : AppColors.dartBlue.withAlpha(80),
+        ),
+      ),
+      child: TextButton.icon(
+        onPressed: _copied ? null : _copy,
+        icon: Icon(
+          _copied ? Icons.check : Icons.copy,
+          size: 16,
+          color: _copied ? Colors.greenAccent : AppColors.dartCyan,
+        ),
+        label: Text(
+          _copied ? 'Copied!' : 'Copy Code',
+          style: TextStyle(
+            color: _copied ? Colors.greenAccent : AppColors.dartCyan,
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
+        ),
+      ),
     );
   }
 }
