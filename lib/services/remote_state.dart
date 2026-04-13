@@ -9,4 +9,4 @@ typedef RemoteState = ({int slide, int frame});
 final remoteGoToNotifier = ValueNotifier<RemoteState?>(null);
 
 /// Whether keyboard navigation (arrow keys / A-D) is active.
-final keyboardEnabledNotifier = ValueNotifier<bool>(true);
+final keyboardEnabledNotifier = ValueNotifier<bool>(false);
