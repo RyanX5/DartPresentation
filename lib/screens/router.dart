@@ -26,6 +26,17 @@ import 'package:dart_presentation/services/socket_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+class _SlideIndex extends InheritedWidget {
+  final int index;
+  const _SlideIndex({required this.index, required super.child});
+
+  static int of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<_SlideIndex>()!.index;
+
+  @override
+  bool updateShouldNotify(_SlideIndex old) => index != old.index;
+}
+
 class SlideController extends InheritedWidget {
   final VoidCallback next;
   final VoidCallback previous;
@@ -61,29 +72,32 @@ class _SlideRouterState extends State<SlideRouter> {
   int _index = 0;
   final List<String> _keyBuffer = [];
 
-  final List<Widget> _slides = [
-    const CoverSlide(),
-    const Slide01Introduction(),
-    const Slide02Background(),
-    const Slide03Domains(),
-    const Slide04Conditionals(),
-    const Slide05Iteration(),
-    const Slide06Operators(),
-    const Slide07TypeSystem(),
-    const Slide08Primitives(),
-    const Slide09Generics(),
-    const Slide10Functions(),
-    const Slide11Lambdas(),
-    const Slide12AdvancedControl(),
-    const Slide13Classes(),
-    const Slide14Inheritance(),
-    const Slide15Interfaces(),
-    const Slide16Encapsulation(),
-    const Slide17Concurrency(),
-    const Slide18Compilation(),
-    const Slide19Demo(),
-    const Slide20Conclusion(),
-    const ThankYouSlide(),
+  late final List<Widget> _slides = [
+    for (final (i, slide) in [
+      const CoverSlide(),
+      const Slide01Introduction(),
+      const Slide02Background(),
+      const Slide03Domains(),
+      const Slide04Conditionals(),
+      const Slide05Iteration(),
+      const Slide06Operators(),
+      const Slide07TypeSystem(),
+      const Slide08Primitives(),
+      const Slide09Generics(),
+      const Slide10Functions(),
+      const Slide11Lambdas(),
+      const Slide12AdvancedControl(),
+      const Slide13Classes(),
+      const Slide14Inheritance(),
+      const Slide15Interfaces(),
+      const Slide16Encapsulation(),
+      const Slide17Concurrency(),
+      const Slide18Compilation(),
+      const Slide19Demo(),
+      const Slide20Conclusion(),
+      const ThankYouSlide(),
+    ].indexed)
+      _SlideIndex(index: i, child: slide),
   ];
 
   @override

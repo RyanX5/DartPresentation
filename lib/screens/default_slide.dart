@@ -47,8 +47,12 @@ class _DefaultSlideState extends State<DefaultSlide> {
   }
 
   void _onRemoteState() {
+    if (!mounted) return;
     final state = remoteGoToNotifier.value;
     if (state == null) return;
+    // Ignore events meant for other slides
+    final myIndex = _SlideIndex.of(context);
+    if (state.slide != myIndex) return;
     // frame 0 = title centered, frame N = content slide N
     final targetIndex = state.frame.clamp(0, widget.childrenSlides.length);
     if (targetIndex != _currentIndex) {

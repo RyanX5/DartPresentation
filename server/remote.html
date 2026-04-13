@@ -179,6 +179,67 @@
       max-width: 320px;
       line-height: 1.6;
     }
+
+    .timer-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 16px 32px;
+      text-align: center;
+      width: 100%;
+      max-width: 320px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .timer-card.running {
+      border-color: rgba(76, 175, 80, 0.35);
+    }
+
+    .timer-left {
+      text-align: left;
+    }
+
+    .timer-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 4px;
+    }
+
+    .timer-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: rgba(255,255,255,0.25);
+      letter-spacing: 0.05em;
+    }
+
+    .timer-value.running {
+      color: #4caf50;
+    }
+
+    .btn-timer-reset {
+      border: none;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.3);
+      font-size: 0.75rem;
+      padding: 8px 14px;
+      cursor: pointer;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-timer-reset:hover {
+      background: rgba(244,67,54,0.15);
+      color: #f44336;
+    }
   </style>
 </head>
 <body>
@@ -196,6 +257,14 @@
       <span class="connection-dot" id="dot"></span>
       <span id="conn-label">Disconnected</span>
     </div>
+  </div>
+
+  <div class="timer-card" id="timer-card">
+    <div class="timer-left">
+      <div class="timer-label">Elapsed Time</div>
+      <div class="timer-value" id="timer-display">00:00</div>
+    </div>
+    <button class="btn-timer-reset" onclick="resetTimer()">Reset</button>
   </div>
 
   <div class="controls">
@@ -266,7 +335,43 @@
       updateStatus(state);
     });
 
+    // ── Timer ──────────────────────────────────────────────────────────────────
+    let timerInterval = null;
+    let timerSeconds = 0;
+    let timerStarted = false;
+
+    const timerDisplay = document.getElementById('timer-display');
+    const timerCard = document.getElementById('timer-card');
+
+    function formatTime(s) {
+      const m = Math.floor(s / 60).toString().padStart(2, '0');
+      const sec = (s % 60).toString().padStart(2, '0');
+      return `${m}:${sec}`;
+    }
+
+    function startTimer() {
+      if (timerStarted) return;
+      timerStarted = true;
+      timerCard.classList.add('running');
+      timerDisplay.classList.add('running');
+      timerInterval = setInterval(() => {
+        timerSeconds++;
+        timerDisplay.textContent = formatTime(timerSeconds);
+      }, 1000);
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timerSeconds = 0;
+      timerStarted = false;
+      timerDisplay.textContent = '00:00';
+      timerCard.classList.remove('running');
+      timerDisplay.classList.remove('running');
+    }
+
     function sendEvent(event) {
+      if (event === 'next' && !timerStarted) startTimer();
       socket.emit(event);
     }
   </script>
